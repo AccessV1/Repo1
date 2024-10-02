@@ -1,6 +1,6 @@
 import { Request } from "undici-types";
 
-// defined a user type later
+// define a user type later
 type User = unknown;
 type Token = string;
 
