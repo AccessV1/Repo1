@@ -1,63 +1,82 @@
-import React, {useState, useEffect} from 'react'
-import {View, Text, Image, StyleSheet, TextInput, Dimensions, TouchableOpacity, FlatList} from 'react-native'
-import flagImages from "./data/flagImages";
-import countries from './data/countries.json'
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TextInput,
+  Dimensions,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
+import flagImages from './data/flagImages';
+import countries from './data/countries.json';
 function CountryCodeSelect() {
-    const [countryCode, setCountryCode] = useState<string>('1');
-    const [countryImg, setCountryImg] = useState<any>(flagImages['us']);
+  const [countryCode, setCountryCode] = useState<string>('1');
+  const [countryImg, setCountryImg] = useState<any>(flagImages['us']);
 
-    useEffect(() => {
-        const country = countries.find((country) => country.dial_code === `+${countryCode}`);
-        if (country && flagImages[country.code.toLowerCase()]) {
-          setCountryImg(flagImages[country.code.toLowerCase()]);
-        } else {
-          setCountryImg(null); // Fallback to US flag if code not found
-        }
-      }, [countryCode]);
+  useEffect(() => {
+    /* React Native requires local images to be loaded statically with `require()`,
+    so dynamic image paths aren't allowed. To work around this, we pre-generate
+     a mapping of country codes to `require()` statements (check flagImages.ts). This allows us to switch
+     flags dynamically based on user input by referencing the pre-built mapping. */
+
+    const country = flagImages[`+${countryCode}`];
+    if (country) {
+      setCountryImg(country);
+    } else {
+      setCountryImg(null); // Fallback to US flag if code not found
+    }
+  }, [countryCode]);
   return (
     <View style={styles.container}>
-        <View style={styles.flagContainer}><Image style={styles.flag}  source={countryImg} /></View>
-        <Text style={{marginVertical: 'auto', fontWeight: 600}}>+ </Text>
-        <TextInput
-        maxLength={3}
-          value={countryCode}
+      <View style={[styles.flagContainer, !countryImg && {opacity: 0}]}>
+        <Image style={styles.flag} source={countryImg} />
+      </View>
+      <Text style={{ marginVertical: 'auto', fontWeight: 600 }}>+ </Text>
+      <TextInput
+        maxLength={4}
+        value={countryCode}
         onChangeText={setCountryCode}
-          style={styles.input}
-          />
-        <Image resizeMode='contain' style={styles.img} source={require("../../../assets/images/down-arrow.png")}  />
+        style={styles.input}
+      />
+      <Image
+        resizeMode="contain"
+        style={styles.img}
+        source={require('../../../assets/images/down-arrow.png')}
+      />
     </View>
-  )
+  );
 }
 
-export default CountryCodeSelect
+export default CountryCodeSelect;
 
 const styles = StyleSheet.create({
-    container: {
-        flexDirection: 'row',
-            marginVertical: 'auto'
-    },
+  container: {
+    flexDirection: 'row',
+    marginVertical: 'auto',
+  },
 
-    input: {
-        fontWeight:'600',
-        minWidth: 15,
-        maxWidth: 50,
-        fontSize: 16,
-    },
+  input: {
+    fontWeight: '600',
+    minWidth: 15,
+    maxWidth: 30,
+    fontSize: 16,
+  },
 
-    img: {
-        marginVertical: 'auto',
-        width: 8,
-        height: 8
-    },
+  img: {
+    marginVertical: 'auto',
+    width: 8,
+    height: 8,
+  },
 
-    flag: {
-        width:24,
-        height: 24
-    },
-    flagContainer: { 
-        marginRight: 10,
-        borderRadius: 100,
-        overflow: 'hidden',
-    }
-})
-
+  flag: {
+    width: 24,
+    height: 24,
+  },
+  flagContainer: {
+    marginRight: 10,
+    borderRadius: 100,
+    overflow: 'hidden',
+  },
+});
