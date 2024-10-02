@@ -14,7 +14,8 @@ import { appColors, globalStyles } from 'app/globalStyles';
 import Button1 from 'app/components/ui/Button1';
 import SocialButton from 'app/components/ui/SocialButton';
 import CountryCodeSelect from 'app/components/ui/CountryCodeSelector/CountryCodeSelect';
-
+import { formatPhoneNumber } from 'app/utils';
+import PhoneNumberInput from 'app/components/ui/PhoneNumberInput';
 const socials = [
   { name: 'Google', img: require('../assets/images/googlelogo.png') },
   { name: 'Facebook', img: require('../assets/images/facebooklogo.png') },
@@ -26,9 +27,15 @@ const { width, height } = Dimensions.get('window');
 function LoginScreen() {
   const [phoneNumber, setPhoneNumber] = useState<string | undefined>();
   const [disabled, setDisabled] = useState<boolean>(true);
+  
 
+
+  const handlePhoneChange = (text: string) => {
+    const formattedPhoneNumber = formatPhoneNumber(text);
+    setPhoneNumber(formattedPhoneNumber);
+  };
   useEffect(() => {
-    phoneNumber?.length === 10 ? setDisabled(false) : setDisabled(true);
+    phoneNumber?.length === 12 ? setDisabled(false) : setDisabled(true);
   }, [phoneNumber]);
 
   return (
@@ -40,16 +47,7 @@ function LoginScreen() {
           resizeMode="contain"
         />
         <View>
-          <Text style={styles.p}>Phone Number</Text>
-          <View style={styles.input}>
-            <CountryCodeSelect />
-            <TextInput
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
-              keyboardType="numeric"
-              placeholder="Enter your phone number"
-            />
-          </View>
+         <PhoneNumberInput  phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}/>
           <Button1 disabled={disabled} title="Get Verification Code" />
         </View>
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
-import { countries } from './countriesToDownload';
+import { countries } from './data';
 // Example JSON structure with country codes and external flag URLs
 
 
