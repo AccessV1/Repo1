@@ -35,7 +35,12 @@ function LoginScreen() {
     setPhoneNumber(formattedPhoneNumber);
   };
   useEffect(() => {
-    phoneNumber?.length === 12 ? setDisabled(false) : setDisabled(true);
+    if (phoneNumber && phoneNumber.length === 12) {
+      setDisabled(false);
+      Keyboard.dismiss();
+    } else {
+      setDisabled(true);
+    }
   }, [phoneNumber]);
 
   return (

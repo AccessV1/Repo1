@@ -1,4 +1,4 @@
-// Formatter function to format phone number
+
 export const formatPhoneNumber = (phoneNumber: string) => {
   const cleaned = phoneNumber.replace(/\D/g, ''); // Remove non-numeric characters
 
@@ -13,3 +13,6 @@ export const formatPhoneNumber = (phoneNumber: string) => {
   }
   return phoneNumber;
 };
+
+
+

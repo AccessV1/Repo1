@@ -1,3 +1,5 @@
+
+
 [
   {
     "name": "Afghanistan",
@@ -173,12 +175,7 @@
     "code": "CM",
     "flag": "./flags/cm.png"
   },
-  {
-    "name": "Canada",
-    "dial_code": "+1",
-    "code": "CA",
-    "flag": "./flags/ca.png"
-  },
+ 
   {
     "name": "Cape Verde",
     "dial_code": "+238",

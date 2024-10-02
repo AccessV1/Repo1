@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Dimensions, Keyboard } from 'react-native';
 import CountryCodeSelect from './CountryCodeSelector/CountryCodeSelect';
 import { appColors } from 'app/globalStyles';
 const { width } = Dimensions.get('window');
@@ -19,7 +19,7 @@ const PhoneNumberInput = ({phoneNumber, setPhoneNumber}: any) => {
       <View style={styles.input}>
         <CountryCodeSelect />
         <TextInput
-        style={{paddingLeft: 10}}
+        style={{paddingLeft: 10, fontWeight: '600'}}
           value={phoneNumber}
           onChangeText={handlePhoneChange} 
           keyboardType="numeric" 
@@ -35,13 +35,13 @@ export default PhoneNumberInput;
 
 const styles = StyleSheet.create({
   p: {
-    fontWeight: '600',
+    fontWeight: 600,
     fontSize: 15,
     color: 'black',
     paddingBottom: 10,
   },
   input: {
-
+    fontWeight: 600,
     marginBottom: 20,
     flexDirection: 'row',
     width: width * 0.9,
