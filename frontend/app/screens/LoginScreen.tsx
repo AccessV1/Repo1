@@ -1,12 +1,23 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, Button, Image, StyleSheet, TextInput, Dimensions } from 'react-native';
-import { appColors } from 'app/globalStyles';
+import { appColors, globalStyles } from 'app/globalStyles';
 import Button1 from 'app/components/ui/Button1';
+import SocialButton from 'app/components/ui/SocialButton';
+const socials = [
+  { name: 'Google', img: require('../assets/images/googlelogo.png') },
+  { name: 'Facebook', img: require('../assets/images/facebooklogo.png') },
+  { name: 'applelogo', img: require('../assets/images/applelogo.png') },
+];
 
 // TO DO: ADD AREA PREFIX WITH FLAG FOR PHONE NUMBER INPUT
 const { width, height } = Dimensions.get('window');
 function LoginScreen() {
-  const [phoneNumber, setPhoneNumber] = useState<number | null>(null)
+  const [phoneNumber, setPhoneNumber] = useState<string | undefined>();
+  const [disabled, setDisabled] = useState<boolean>(true);
+
+  useEffect(() => {
+    phoneNumber?.length === 10 ? setDisabled(false) : setDisabled(true);
+  }, [phoneNumber]);
   return (
     <View style={styles.container}>
       <Image
@@ -17,10 +28,30 @@ function LoginScreen() {
       <View>
         <Text style={styles.p}>Phone Number</Text>
         <View style={styles.phone}>
-          <TextInput style={styles.input} placeholder="Enter your phone number" />
+          <TextInput
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            keyboardType="numeric"
+            style={styles.input}
+            placeholder="Enter your phone number"
+          />
         </View>
-        <Button1 title='Get Verification Code' />
+        <Button1 disabled={disabled} title="Get Verification Code" />
       </View>
+
+      <Text style={[styles.p, { marginHorizontal: 'auto', paddingTop: 55 }]}>OR</Text>
+      <Text style={[styles.p, { marginHorizontal: 'auto', paddingTop: 10 }]}>Sign in with</Text>
+
+      <View style={styles.socials}>
+        {socials.map((social, index) => {
+          return <SocialButton key={index} img={social.img} />;
+        })}
+      </View>
+
+      <View style={{flexDirection: 'row', }}>
+      <Text style={[styles.p, { marginHorizontal: 'auto', paddingTop: 30, color: appColors.gray }]}>Create a New Account? <Text style={[styles.p, { color: appColors.primary,  marginHorizontal: 'auto', paddingTop: 10 }]}>Sign Up</Text></Text>
+      </View>
+      
     </View>
   );
 }
@@ -28,7 +59,6 @@ function LoginScreen() {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-
   container: {
     width: width * 0.9,
     flex: 1,
@@ -45,6 +75,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 15,
     color: 'black',
+    paddingBottom: 10,
   },
 
   input: {
@@ -57,5 +88,12 @@ const styles = StyleSheet.create({
   },
   phone: {
     paddingBottom: 20,
-  }
+  },
+
+  socials: {
+    marginHorizontal: 'auto',
+    paddingTop: 10,
+    flexDirection: 'row',
+    gap: 30,
+  },
 });

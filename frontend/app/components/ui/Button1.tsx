@@ -8,7 +8,7 @@ interface Button1Props {
     style?: any;
 }
 // Custom Button Component
-const CustomButton = ({ onPress, title, disabled = false, style }: Button1Props) => {
+const CustomButton = ({ onPress, title, disabled, style }: Button1Props) => {
   return (
     <TouchableOpacity
       style={[
@@ -19,7 +19,7 @@ const CustomButton = ({ onPress, title, disabled = false, style }: Button1Props)
       onPress={onPress}
       disabled={disabled} // Button is disabled if "disabled" prop is true
     >
-      <Text style={styles.buttonText}>{title}</Text>
+      <Text style={ disabled? styles.buttonTextDisabled : styles.buttonTextEnabled }>{title}</Text>
     </TouchableOpacity>
   );
 };
@@ -36,10 +36,16 @@ const styles = StyleSheet.create({
     backgroundColor: appColors.primary
   },
   buttonDisabled: {
-    backgroundColor: appColors.lightGray, // Gray background when disabled
+    backgroundColor: appColors.lightGray,
+    
   },
-  buttonText: {
-    color: '#fff', // White text
+  buttonTextEnabled: {
+    color: 'white',
+    fontSize: 16,
+  },
+
+  buttonTextDisabled: {
+    color: appColors.gray,
     fontSize: 16,
   },
 });
