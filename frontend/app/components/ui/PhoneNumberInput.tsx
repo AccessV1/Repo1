@@ -13,11 +13,13 @@ const PhoneNumberInput = ({phoneNumber, setPhoneNumber}: any) => {
     setPhoneNumber(formattedPhoneNumber); 
   };
 
-  return (
+  return (  
     <View>
       <Text style={{fontWeight: 600, paddingBottom: 10}}>Phone Number</Text>
       <View style={styles.input}>
         <CountryCodeSelect />
+
+        {/* Phone number input field */}
         <TextInput
         style={{paddingLeft: 10, fontWeight: '600'}}
           value={phoneNumber}

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import SocialButton from './SocialButton';
 
-const SocialButtons = ({ socials }) => {
+const SocialButtons = ({ socials }: {socials: Array<{name: string, img: unknown}>}) => {
   return (
     <View style={styles.socials}>
       {socials.map((social, index) => {

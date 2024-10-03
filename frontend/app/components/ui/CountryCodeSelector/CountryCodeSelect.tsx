@@ -5,11 +5,8 @@ import {
   Image,
   StyleSheet,
   TextInput,
-  Dimensions,
-  TouchableOpacity,
-  FlatList,
 } from 'react-native';
-import flagImages from './data/flagImages';
+import flagImages from './data/flagImages';   // Image paths for country flags (mapped to require() statements)
 import countries from './data/countries.json';
 function CountryCodeSelect() {
   const [countryCode, setCountryCode] = useState<string>('1');
@@ -18,18 +15,19 @@ function CountryCodeSelect() {
   useEffect(() => {
     /* React Native requires local images to be loaded statically with `require()`,
     so dynamic image paths aren't allowed. To work around this, we pre-generate
-     a mapping of country codes to `require()` statements (check flagImages.ts). This allows us to switch
+     a mapping of country codes to `require()` statements (See flagImages.ts). This allows us to switch
      flags dynamically based on user input by referencing the pre-built mapping. */
 
     const country = flagImages[`+${countryCode}`];
     if (country) {
       setCountryImg(country);
     } else {
-      setCountryImg(null); // Fallback to US flag if code not found
+      setCountryImg(null); // If no flag is found, set the flag to null
     }
   }, [countryCode]);
   return (
     <View style={styles.container}>
+        {/* If no code is found then dont show any flag */}
       <View style={[styles.flagContainer, !countryImg && {opacity: 0}]}>
         <Image style={styles.flag} source={countryImg} />
       </View>

@@ -1,18 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import { appColors, globalStyles } from 'app/globalStyles';
+import { appColors} from 'app/globalStyles';
 import Button1 from 'app/components/ui/Button1';
-import SocialButton from 'app/components/ui/SocialButton';
-import CountryCodeSelect from 'app/components/ui/CountryCodeSelector/CountryCodeSelect';
-import { formatPhoneNumber } from 'app/utils';
 import PhoneNumberInput from 'app/components/ui/PhoneNumberInput';
 import SocialButtons from 'app/components/ui/SocialButtons';
 import {
   View,
   Text,
-  Button,
   Image,
   StyleSheet,
-  TextInput,
   Dimensions,
   TouchableWithoutFeedback,
   Keyboard,

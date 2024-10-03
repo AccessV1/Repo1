@@ -1,5 +1,7 @@
-import {View, Text, Image, StyleSheet, TextInput, Dimensions} from 'react-native'
+import {View, Image, StyleSheet} from 'react-native'
 import { appColors } from 'app/globalStyles'
+
+// ADD ONPRESS FUNCTIONALITY
 function SocialButton({img}: {img: any}) {
   return (
     <View style={styles.container}>
