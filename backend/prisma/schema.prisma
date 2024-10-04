@@ -12,3 +12,25 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+//  we can add things as we go
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String @unique
+  phoneNumber Int @unique
+  name String
+  password String
+  createdAt DateTime @default(now())
+  profilePicture String
+  RefreshToken RefreshToken[]
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
