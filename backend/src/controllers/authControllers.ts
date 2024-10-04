@@ -1,12 +1,64 @@
+import { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import dotenv from "dotenv";
+import { Users } from "../models/User";
+import { User } from "@prisma/client";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwtHelpers";
 import { ProtectedRequest } from "../types";
+import { RefreshToken } from "@prisma/client";
+import { RefreshTokens } from "../models/RefreshToken";
+import { UserWithOptionalPassword } from "../types";
+dotenv.config({ path: "../.env" });
+
 /**
  * @desc Registers a new user
  * @route POST /api/auth/register
  * @access Public
  */
 export const registerUser = asyncHandler(
-  async (req: Request, res: Response) => {}
+  async (req: Request, res: Response) => {
+    const { name, username, phoneNumber, email, password, profilePicture } =
+      req.body;
+
+    if (!name || !email || !password || !username) {
+      res.status(400);
+      console.log("Please add all fields");
+      throw new Error("Please add all fields");
+    }
+
+    const userExists = await Users.exists(email, username);
+    if (userExists) {
+      res.status(400);
+      throw new Error("User already exists");
+    }
+
+    const hashedPassword: string = await Users.hashPassword(password);
+
+    const newUser = (await Users.create({
+      name,
+      username,
+      email,
+      phoneNumber,
+      password: hashedPassword,
+      profilePicture,
+    })) as UserWithOptionalPassword;
+
+    if (newUser) {
+      const refreshToken = await generateRefreshToken(res, newUser.id!);
+      const accessToken = generateAccessToken(newUser.id!);
+      delete newUser.password;
+
+      res.status(201).json({
+        user: { ...newUser },
+        refreshToken,
+        accessToken,
+      });
+    } else {
+      res.status(400);
+      throw new Error("Invalid user data");
+    }
+  }
 );
 
 /**
@@ -14,9 +66,33 @@ export const registerUser = asyncHandler(
  * @route POST /api/auth/login
  * @access Public
  */
-export const loginUser = asyncHandler(
-  async (req: Request, res: Response) => {}
-);
+export const loginUser = asyncHandler(async (req: Request, res: Response) => {
+  const { emailOrUsername, password } = req.body;
+
+  if (!emailOrUsername || !password) {
+    res.status(400);
+    throw new Error("Please add all fields");
+  }
+
+  const user = (await Users.findByEmailOrUsername(
+    emailOrUsername
+  )) as UserWithOptionalPassword;
+
+  if (user && (await Users.verifyPassword(password, user.password as string))) {
+    const refreshToken = await generateRefreshToken(res, user.id!);
+    const accessToken = generateAccessToken(user.id!);
+    delete user.password;
+
+    res.json({
+      user: { ...user },
+      refreshToken,
+      accessToken,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid credentials");
+  }
+});
 
 /**
  * @desc Gets user data
@@ -24,7 +100,13 @@ export const loginUser = asyncHandler(
  * @access Private
  */
 export const getUser = asyncHandler(
-  async (req: ProtectedRequest, res: Response) => {}
+  async (req: ProtectedRequest, res: Response) => {
+    if ("token" in req) {
+      res.json({ user: req.user, token: req.token });
+    } else {
+      res.json({ user: req.user });
+    }
+  }
 );
 
 /***
@@ -32,6 +114,18 @@ export const getUser = asyncHandler(
  * @route GET /api/auth/logout
  * @access Private
  */
-export const logoutUser = asyncHandler(
-  async (req: Request, res: Response) => {}
-);
+export const logoutUser = asyncHandler(async (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    res.json({ message: "Successfully logged out (refreshToken not found)" });
+    return;
+  }
+
+  const decoded = jwt.verify(
+    refreshToken,
+    process.env.JWT_REFRESH_SECRET!
+  ) as JwtPayload;
+  await RefreshTokens.delete(decoded.id, refreshToken);
+  res.json({ message: "Successfully logged out" });
+});

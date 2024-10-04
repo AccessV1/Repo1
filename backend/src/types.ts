@@ -1,13 +1,15 @@
-import { Request } from "undici-types";
-
+import { Request } from "express";
+import { User } from "@prisma/client";
 // define a user type later
-type User = unknown;
-type Token = string;
 
 /**
  * Define User type before using
  */
 export interface ProtectedRequest extends Request {
   user?: User;
-  token?: Token;
+  token?: string;
+}
+
+export interface UserWithOptionalPassword extends Omit<User, "password"> {
+  password?: string;
 }

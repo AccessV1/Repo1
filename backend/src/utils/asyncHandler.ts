@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
+import { ProtectedRequest } from "../types";
 
 /**
  *@description A utility function to wrap asynchronous route handlers.
@@ -7,7 +8,11 @@ import { Request, Response, NextFunction, RequestHandler } from "express";
  *
  */
 export const asyncHandler = (fn: Function) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (
+    req: Request | ProtectedRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
 };

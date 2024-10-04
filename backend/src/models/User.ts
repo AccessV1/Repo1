@@ -2,6 +2,8 @@ import { db } from "../../prisma/PrismaClient";
 import { User } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
+interface newUserRegistrationData extends Omit<User, "id" | "createdAt"> {}
+
 export class Users {
   /**
    * Find a user by their email or username.
@@ -56,7 +58,7 @@ export class Users {
    * @param user - User data excluding the ID
    * @returns The created user or null
    */
-  static async create(user: Omit<User, "id">): Promise<User | null> {
+  static async create(user: newUserRegistrationData): Promise<User | null> {
     const domainUser: User = await db.user.create({
       data: user,
     });
@@ -73,8 +75,8 @@ export class Users {
     password: string,
     hashedPassword: string
   ): Promise<boolean> {
-    const correct = await bcrypt.compare(password, hashedPassword);
-    return correct;
+    const isCorrect = await bcrypt.compare(password, hashedPassword);
+    return isCorrect;
   }
 
   /**
