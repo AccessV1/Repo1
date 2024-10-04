@@ -12,15 +12,15 @@ interface DecodedToken {
 
 export const protect = asyncHandler(
   async (req: ProtectedRequest, res: Response, next: NextFunction) => {
-    const refreshToken = req.cookies.refreshToken;
-
     let accessToken: string | null = null;
+    let refreshToken: string | null = null;
     try {
       if (
         req.headers.authorization &&
         req.headers.authorization.startsWith("Bearer")
       ) {
         accessToken = req.headers.authorization.split(" ")[1];
+        refreshToken = req.headers.authorization.split(" ")[2];
       }
 
       if (accessToken) {
@@ -36,7 +36,6 @@ export const protect = asyncHandler(
         }
 
         req.user = user;
-        req.token = accessToken;
         next();
         return;
       }

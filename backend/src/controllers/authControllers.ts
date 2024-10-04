@@ -21,12 +21,6 @@ export const registerUser = asyncHandler(
     const { name, username, phoneNumber, email, password, profilePicture } =
       req.body;
 
-    if (!name || !email || !password || !username) {
-      res.status(400);
-      console.log("Please add all fields");
-      throw new Error("Please add all fields");
-    }
-
     const userExists = await Users.exists(email, username);
     if (userExists) {
       res.status(400);
@@ -61,6 +55,16 @@ export const registerUser = asyncHandler(
   }
 );
 
+export const checkUserExistance = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { uniqueIdentifier } = req.body;
+
+    const userExists: boolean = !!Users.findByEmailOrUsername(uniqueIdentifier);
+
+    res.json({ userExists });
+  }
+);
+
 /**
  * @desc Authenticates a user
  * @route POST /api/auth/login
@@ -69,10 +73,6 @@ export const registerUser = asyncHandler(
 export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { emailOrUsername, password } = req.body;
 
-  if (!emailOrUsername || !password) {
-    res.status(400);
-    throw new Error("Please add all fields");
-  }
 
   const user = (await Users.findByEmailOrUsername(
     emailOrUsername
@@ -84,7 +84,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     delete user.password;
 
     res.json({
-      user: { ...user },
+      user,
       refreshToken,
       accessToken,
     });
@@ -101,11 +101,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
  */
 export const getUser = asyncHandler(
   async (req: ProtectedRequest, res: Response) => {
-    if ("token" in req) {
-      res.json({ user: req.user, token: req.token });
-    } else {
-      res.json({ user: req.user });
-    }
+    res.send({user: req.user})
   }
 );
 
