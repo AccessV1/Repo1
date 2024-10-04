@@ -1,82 +1,59 @@
-import { useState, useEffect, useCallback } from 'react';
-import { appColors} from 'app/globalStyles';
-import DisabledButton from 'app/components/ui/DisabledButton';
+import { useState, useEffect } from 'react';
+import ConditionalButton from 'app/components/ui/ConditionalButton';
 import PhoneNumberInput from 'app/components/ui/PhoneNumberInput';
 import SocialButtons from 'app/components/ui/SocialButtons';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  Dimensions,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from 'react-native';
+import { View, Text, Image, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
-
-const socials: Array<{ name: string; img: any; }> = [
+const socials: Array<{ name: string; img: any }> = [
   { name: 'Google', img: require('../assets/images/googlelogo.png') },
   { name: 'Facebook', img: require('../assets/images/facebooklogo.png') },
   { name: 'applelogo', img: require('../assets/images/applelogo.png') },
 ];
 
 const { width } = Dimensions.get('window'); // Get screen dimensions for responsive design
+const dynamicWidth = width * 0.9; // react native doesnt support vw so we have to save a dynamic width we want to use
 
 function LoginScreen() {
   const [phoneNumber, setPhoneNumber] = useState<string | undefined>(); // State to hold the phone number input
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true); // State to track if the button should be disabled
 
- 
   useEffect(() => {
     if (phoneNumber && phoneNumber.length === 12) {
       setIsButtonDisabled(false);
       Keyboard.dismiss();
     } else {
-      setIsButtonDisabled(true); 
+      setIsButtonDisabled(true);
     }
   }, [phoneNumber]);
 
   return (
     // TouchableWithoutFeedback is used to dismiss the keyboard when tapping outside the input field
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={styles.container}>
+      <View className="m-auto flex-1 pt-[50]" style={{ width: dynamicWidth }}>
         {/* Logo image */}
         <Image
-          style={styles.img1}
+          className="mx-auto mb-10 h-[218] w-[218]"
           source={require('../assets/images/openlogo1.png')}
           resizeMode="contain"
         />
-        
+
         <View>
-          
           <PhoneNumberInput phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} />
           {/* Custom Button component; disabled when phone number is not valid */}
-          <DisabledButton
-            disabled={isButtonDisabled}
-            style={{ width: width * 0.9 }} // Button width is set relative to screen width
-            title="Get Verification Code"
-          />
+          <ConditionalButton disabled={isButtonDisabled} title="Get Verification Code" />
         </View>
 
-       
-        <Text style={[styles.p, { marginHorizontal: 'auto', paddingTop: 55 }]}>OR</Text>
-        <Text style={[styles.p, { marginHorizontal: 'auto', paddingTop: 10 }]}>Sign in with</Text>
+        <Text className="mx-auto pb-10 pt-[55] font-[600] text-[15] text-black">OR</Text>
+        <Text className="mx-auto  pb-5 font-[600] text-[15] text-black">Sign in with</Text>
 
         {/* component for login with Google, Facebook, etc. */}
         <SocialButtons socials={socials} />
 
         {/* Link to sign up for new users */}
-        <View style={{ flexDirection: 'row' }}>
-          <Text
-            style={[styles.p, { marginHorizontal: 'auto', paddingTop: 30, color: appColors.gray }]}>
+        <View className="flex-row">
+          <Text className="text-colors-gray mx-auto pt-[30] font-[600] text-[15]">
             Create a New Account?{' '}
-            <Text
-              style={[
-                styles.p,
-                { color: appColors.primary, marginHorizontal: 'auto', paddingTop: 10 },
-              ]}>
-              Sign Up
-            </Text>
+            <Text className="text-colors-primary mx-auto pt-10 font-[600] text-[15]">Sign Up</Text>
           </Text>
         </View>
       </View>
@@ -85,34 +62,3 @@ function LoginScreen() {
 }
 
 export default LoginScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    width: width * 0.9, // Container takes 90% of the screen width for responsive layout
-    flex: 1,
-    paddingTop: 50,
-  },
-  img1: {
-    marginHorizontal: 'auto',
-    width: 218,
-    height: 218,
-    marginBottom: 50, 
-  },
-
-  p: {
-    fontWeight: '600',
-    fontSize: 15,
-    color: 'black',
-    paddingBottom: 10,
-  },
-
-  input: {
-    marginBottom: 20,
-    flexDirection: 'row', 
-    width: width * 0.9,
-    height: 50,
-    backgroundColor: appColors.lightGray, 
-    borderRadius: 8, 
-    padding: 10, 
-  },
-});

@@ -1,33 +1,12 @@
-import {View, Image, StyleSheet} from 'react-native'
-import { appColors } from 'app/globalStyles'
+import { View, Image } from 'react-native';
 
 // ADD ONPRESS FUNCTIONALITY
-function SocialButton({img}: {img: any}) {
+function SocialButton({ img }: { img: any }) {
   return (
-    <View style={styles.container}>
-        <Image
-          style={styles.img}
-          source={img}
-          resizeMode="contain" />
+    <View className="border-colors-lightGray h-[47.36] w-[47.36] rounded-[12] border-[2px] ">
+      <Image className="m-auto h-[24] w-[24] " source={img} resizeMode="contain" />
     </View>
-  )
+  );
 }
 
-export default SocialButton
-
-const styles = StyleSheet.create({
-    container : {
-        width: 47.36,
-        height: 47.36,
-        borderRadius: 12,
-        borderWidth: 2,
-        borderColor: appColors.lightGray
-
-    },
-    img: {
-        margin: 'auto',
-        width: 24,
-        height: 24,
-}
-}
-)
+export default SocialButton;
