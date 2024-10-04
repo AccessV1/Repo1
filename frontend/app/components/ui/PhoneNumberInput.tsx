@@ -7,10 +7,6 @@ import { formatPhoneNumber } from 'app/utils';
 
 const PhoneNumberInput = ({phoneNumber, setPhoneNumber}: any) => {
 
-/**
- * @description Function to format the phone number before saving to state as the user types
- * @param text - The phone number input text
- * */ 
   const handlePhoneChange = (text: string) => {
     const formattedPhoneNumber = formatPhoneNumber(text); 
     setPhoneNumber(formattedPhoneNumber); 

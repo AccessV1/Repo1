@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { appColors} from 'app/globalStyles';
-import Button1 from 'app/components/ui/Button1';
+import DisabledButton from 'app/components/ui/DisabledButton';
 import PhoneNumberInput from 'app/components/ui/PhoneNumberInput';
 import SocialButtons from 'app/components/ui/SocialButtons';
 import {
@@ -13,9 +13,7 @@ import {
   Keyboard,
 } from 'react-native';
 
-/**
- * @description Array of social media login options with their associated image and name
- */
+
 const socials: Array<{ name: string; img: any; }> = [
   { name: 'Google', img: require('../assets/images/googlelogo.png') },
   { name: 'Facebook', img: require('../assets/images/facebooklogo.png') },
@@ -28,10 +26,7 @@ function LoginScreen() {
   const [phoneNumber, setPhoneNumber] = useState<string | undefined>(); // State to hold the phone number input
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true); // State to track if the button should be disabled
 
-  /**
-   * @description useEffect hook to enable or disable the button based on the phone number's length.
-   * When the phone number is valid, the button becomes active, and the keyboard dismisses.
-   */
+ 
   useEffect(() => {
     if (phoneNumber && phoneNumber.length === 12) {
       setIsButtonDisabled(false);
@@ -56,7 +51,7 @@ function LoginScreen() {
           
           <PhoneNumberInput phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} />
           {/* Custom Button component; disabled when phone number is not valid */}
-          <Button1
+          <DisabledButton
             disabled={isButtonDisabled}
             style={{ width: width * 0.9 }} // Button width is set relative to screen width
             title="Get Verification Code"

@@ -1,14 +1,19 @@
-import { appColors } from 'app/globalStyles';
+import React from 'react';
+import {appColors} from '../../globalStyles';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-interface Button1Props {
+interface DisabledButtonProps {
     onPress?: () => void;
     title: string;
     disabled?: boolean;
     style?: any;
 }
-// Custom Button Component
-const CustomButton = ({ onPress, title, disabled, style }: Button1Props) => {
+
+
+/**
+ * @description Custom button component that can be enabled or disabled based on the "disabled" prop.
+ */
+const DisabledButton = ({ onPress, title, disabled, style }: DisabledButtonProps) => {
   return (
     <TouchableOpacity
       style={[
@@ -50,4 +55,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomButton;
+export default DisabledButton;

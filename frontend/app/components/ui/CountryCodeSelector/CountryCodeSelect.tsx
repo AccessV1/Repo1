@@ -12,11 +12,7 @@ function CountryCodeSelect() {
   const [countryCode, setCountryCode] = useState<string>('1');
   const [countryImg, setCountryImg] = useState<any>(flagImages['us']);
 
-     /** 
-  * @description This useEffect hook sets the correct country flag image based on the country code. 
-  * Since React Native requires static paths for images (using `require()`), we use a predefined mapping 
-  * (in `flagImages.ts`) that links each country code to its flag image.
-  */
+
   useEffect(() => {
     const country = flagImages[`+${countryCode}`];
     if (country) {
