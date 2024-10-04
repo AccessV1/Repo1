@@ -1,6 +1,6 @@
 import { SafeAreaView, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
-
+import '../../global.css';
 interface RootLayoutProps {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
