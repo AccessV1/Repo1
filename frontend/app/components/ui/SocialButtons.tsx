@@ -1,10 +1,9 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import SocialButton from './SocialButton';
 
-const SocialButtons = ({ socials }: {socials: Array<{name: string, img: unknown}>}) => {
+const SocialButtons = ({ socials }: { socials: Array<{ name: string; img: unknown }> }) => {
   return (
-    <View style={styles.socials}>
+    <View className="mx-auto flex-row gap-[30] pt-[10]">
       {socials.map((social, index) => {
         return <SocialButton key={index} img={social.img} />;
       })}
@@ -12,12 +11,3 @@ const SocialButtons = ({ socials }: {socials: Array<{name: string, img: unknown}
   );
 };
 export default SocialButtons;
-
-const styles = StyleSheet.create({
-  socials: {
-    marginHorizontal: 'auto',
-    paddingTop: 10,
-    flexDirection: 'row',
-    gap: 30,
-  },
-});
