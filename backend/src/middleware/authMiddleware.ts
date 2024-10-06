@@ -53,7 +53,7 @@ export const protect = asyncHandler(
             throw new Error("Not authorized, user not found");
           }
           req.user = user;
-          req.token = accessToken as string;
+          req.accessToken = accessToken as string;
           next();
           return;
         }
