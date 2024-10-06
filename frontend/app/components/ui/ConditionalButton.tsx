@@ -1,11 +1,9 @@
-import { TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity, Text, TouchableOpacityProps } from 'react-native';
+import React from 'react';
 
-interface ConditionalButtonProps {
+interface ConditionalButtonProps extends TouchableOpacityProps {
   onPress?: () => void;
   title: string;
-  disabled?: boolean;
-  className?: string;
-  style?: any;
 }
 
 /**
