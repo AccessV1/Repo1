@@ -40,7 +40,7 @@ export const NameInputScreen = () => {
           onChangeText={(text) => setName(text)}
         />
 
-        <ConditionalButton disabled={isButtonDisabled} title="Let's Begin" className="w-full absolute bottom-0" />
+        <ConditionalButton disabled={isButtonDisabled} title="Let's Begin" className="w-full absolute bottom-0 mb-4" />
       </View>
     </TouchableWithoutFeedback>
   );
