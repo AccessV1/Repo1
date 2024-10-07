@@ -7,6 +7,7 @@ import { User } from "@prisma/client";
  */
 export interface ProtectedRequest extends Request {
   user?: User;
+  accessToken?: string;
 }
 
 export interface UserWithOptionalPassword extends Omit<User, "password"> {
