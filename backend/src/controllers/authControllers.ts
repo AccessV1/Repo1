@@ -128,7 +128,7 @@ export const logoutUser = asyncHandler(async (req: Request, res: Response) => {
 
 /***
  * @desc sends a verification code to a given phone number
- * @route GET /api/auth/sendVerificationCode
+ * @route POST /api/auth/sendVerificationCode
  * @access Public
  * @reqBody PhoneNumber: string
  */
