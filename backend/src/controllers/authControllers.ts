@@ -6,7 +6,6 @@ import { Users } from "../models/User";
 import { User } from "@prisma/client";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwtHelpers";
 import { ProtectedRequest } from "../types";
-import { RefreshToken } from "@prisma/client";
 import { RefreshTokens } from "../models/RefreshToken";
 import { UserWithOptionalPassword } from "../types";
 dotenv.config({ path: "../.env" });
@@ -39,7 +38,7 @@ export const registerUser = asyncHandler(
     })) as UserWithOptionalPassword;
 
     if (newUser) {
-      const refreshToken = await generateRefreshToken(res, newUser.id!);
+      const refreshToken = await generateRefreshToken(newUser.id!);
       const accessToken = generateAccessToken(newUser.id!);
       delete newUser.password;
 
@@ -73,13 +72,12 @@ export const checkUserExistance = asyncHandler(
 export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { emailOrUsername, password } = req.body;
 
-
   const user = (await Users.findByEmailOrUsername(
     emailOrUsername
   )) as UserWithOptionalPassword;
 
   if (user && (await Users.verifyPassword(password, user.password as string))) {
-    const refreshToken = await generateRefreshToken(res, user.id!);
+    const refreshToken = await generateRefreshToken(user.id!);
     const accessToken = generateAccessToken(user.id!);
     delete user.password;
 
@@ -101,7 +99,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
  */
 export const getUser = asyncHandler(
   async (req: ProtectedRequest, res: Response) => {
-    res.send({user: req.user})
+    res.send({ user: req.user });
   }
 );
 
@@ -110,6 +108,43 @@ export const getUser = asyncHandler(
  * @route GET /api/auth/logout
  * @access Private
  */
+
+export const googleCallback = asyncHandler(
+  async (req: Request, res: Response) => {
+    const user = req.user as User;
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    try {
+      const accessToken = generateAccessToken(user.id);
+      const refreshToken = await generateRefreshToken(user.id);
+      res.json({ user, accessToken, refreshToken });
+    } catch (error) {
+      res.status(500).json({ message: "Token generation failed", error });
+    }
+  }
+);
+
+export const facebookCallback = asyncHandler(
+  async (req: Request, res: Response) => {
+    const user = req.user as User;
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    try {
+      const accessToken = generateAccessToken(user.id);
+      const refreshToken = await generateRefreshToken(user.id);
+      res.json({ user, accessToken, refreshToken });
+    } catch (error) {
+      res.status(500).json({ message: "Token generation failed", error });
+    }
+  }
+);
+
 export const logoutUser = asyncHandler(async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
 
