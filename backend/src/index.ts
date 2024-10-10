@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import { errorHandlingMiddleware } from "./middleware/errorHandlingMiddleware";
-import apiRouter from "./api";
+import apiRouter from "./routes";
 import dotenv from "dotenv";
 import passport from "./utils/passport";
 
