@@ -9,7 +9,7 @@ export default function App() {
     <RootLayout style={{ justifyContent: 'center', alignItems: 'center', height: '100%' }}>
       {/* <Text className="text-5xl text-green-100">The Access App</Text> */}
       {/* <LoginScreen /> */}
-      <ServiceLocationScreen/>
+      <ServiceLocationScreen />
     </RootLayout>
   );
 }

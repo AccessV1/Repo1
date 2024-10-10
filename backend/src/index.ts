@@ -15,12 +15,12 @@ app.use(express.json());
 app.use(passport.initialize());
 
 app.get("/", (req: Request, res: Response) => {
+  console.log("hit");
   res.send("server is working");
 });
 
 app.use("/api", apiRouter);
 
-//  errorHandlingMiddleware has to be the last middleware intitiallized
 app.use(errorHandlingMiddleware);
 
 app.listen(PORT, () => {
