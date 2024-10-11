@@ -34,3 +34,4 @@ model RefreshToken {
   createdAt DateTime @default(now())
   expiresAt DateTime
 }
+
