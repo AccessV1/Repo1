@@ -74,7 +74,7 @@ function LoginScreen() {
             title="Get Verification Code"
           />
           <Text className={`pt-[25] text-red-600 ${phoneNumberNotFound ? '' : 'hidden'}`}>
-            Number not found
+            Phone number not found
           </Text>
         </View>
 
