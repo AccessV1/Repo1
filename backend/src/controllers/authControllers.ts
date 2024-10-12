@@ -3,10 +3,8 @@ import { asyncHandler } from "../utils/asyncHandler";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import { Users } from "../models/User";
-import { User } from "@prisma/client";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwtHelpers";
 import { ProtectedRequest } from "../types";
-import { RefreshToken } from "@prisma/client";
 import { RefreshTokens } from "../models/RefreshToken";
 import { UserWithOptionalPassword } from "../types";
 import * as NumberVerificationHelpers from "../utils/numberVerificationHelpers";
@@ -157,5 +155,14 @@ export const VerifyPhoneNumberCode = asyncHandler(
       code
     );
     res.json({ isVerified: isVerified.success });
+  }
+);
+
+export const isPhoneNumberLinkedToUser = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { phoneNumber } = req.body;
+
+    const isPhoneNumberTaken: boolean = !!(await Users.findByPhoneNumber(phoneNumber));
+    res.json({ isPhoneNumberTaken });
   }
 );

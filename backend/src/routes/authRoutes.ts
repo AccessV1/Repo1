@@ -5,6 +5,7 @@ import {
   logoutUser,
   sendPhoneNumberVerificationCode,
   VerifyPhoneNumberCode,
+  isPhoneNumberTaken,
 } from "../controllers/authControllers";
 
 const router = Router();
@@ -14,4 +15,5 @@ router.post("/register", registerUser);
 router.get("/logout", logoutUser);
 router.post("/sendVerificationCode", sendPhoneNumberVerificationCode);
 router.post("/verifyPhoneNumberCode", VerifyPhoneNumberCode);
+router.post("isPhoneNumberLinkedToUser", isPhoneNumberTaken);
 export default router;
