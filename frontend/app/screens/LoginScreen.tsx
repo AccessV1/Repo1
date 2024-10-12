@@ -44,7 +44,6 @@ function LoginScreen() {
       try {
         const res = await fetch(`${API_URL}/auth/isPhoneNumberLinkedToUser/${phoneNumber}`);
         const { isPhoneNumberLinkedToUser } = await res.json();
-        console.log(isPhoneNumberLinkedToUser);
         if (!isPhoneNumberLinkedToUser) {
           setPhoneNumberNotFound(true);
         } else {
