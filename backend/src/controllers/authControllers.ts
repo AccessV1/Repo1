@@ -158,6 +158,12 @@ export const VerifyPhoneNumberCode = asyncHandler(
   }
 );
 
+/***
+ * @desc states whether a phone number is linked to a user
+ * @route POST /api/auth/isPhoneNumberLinkedToUser
+ * @access Public
+ * @reqBody phoneNumber: string
+ */
 export const isPhoneNumberLinkedToUser = asyncHandler(
   async (req: Request, res: Response) => {
     const { phoneNumber } = req.body;
