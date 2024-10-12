@@ -2,7 +2,15 @@ import { useState, useEffect } from 'react';
 import ConditionalButton from 'app/components/ui/ConditionalButton';
 import PhoneNumberInput from 'app/components/ui/PhoneNumberInput';
 import SocialButtons from 'app/components/ui/SocialButtons';
-import { View, Text, Image, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  Dimensions,
+  TouchableWithoutFeedback,
+  Keyboard,
+  TouchableOpacity,
+} from 'react-native';
 import { useAuthStore } from 'app/globalStore/authStore';
 import { useNavigation } from '@react-navigation/native';
 import { AuthStackParamList } from 'app/navigation/AuthStack';
@@ -68,14 +76,19 @@ function LoginScreen() {
         <View className="items-center justify-center">
           <PhoneNumberInput phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} />
           {/* Custom Button component; disabled when phone number is not valid */}
+
+          <Text className={`mb-5 text-red-600 ${phoneNumberNotFound ? '' : 'hidden'}`}>
+            Phone number not found
+          </Text>
           <ConditionalButton
+            className="w-full"
             disabled={isButtonDisabled}
             onPress={handleSendVerificationCode}
             title="Get Verification Code"
           />
-          <Text className={`pt-[25] text-red-600 ${phoneNumberNotFound ? '' : 'hidden'}`}>
-            Phone number not found
-          </Text>
+          <TouchableOpacity>
+            <Text className="pt-[25] pb-[10] text-gray-500 underline">Use password instead</Text>
+          </TouchableOpacity>
         </View>
 
         <Text className="mx-auto pb-10 pt-[25] font-[600] text-[15] text-black">OR</Text>

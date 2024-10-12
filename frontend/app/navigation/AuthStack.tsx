@@ -29,18 +29,18 @@ export const AuthStack = () => {
       screenOptions={{
         headerTitle: '',
         headerStyle: {
-          backgroundColor: 'transparent', 
+          backgroundColor: 'white', 
           elevation: 0, 
           shadowOpacity: 0, 
         },
       }}>
       {authScreens.map((screen: AuthScreen) => (
-        <Stack.Screen
+          <Stack.Screen
           key={screen.name}
           name={screen.name}
           // since we are passing in a function, using the component prop would cause lose of component state on rerender, so we pass the contents in the children prop instead
           children={(props: {}) => (
-            <RootLayout>
+            <RootLayout className="bg-white">
               <screen.component {...props} />
             </RootLayout>
           )}
