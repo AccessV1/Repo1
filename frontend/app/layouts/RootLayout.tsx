@@ -8,7 +8,7 @@ interface RootLayoutProps {
 
 export const RootLayout: React.FC<RootLayoutProps> = ({ children, style }): React.ReactNode => {
   return (
-    <SafeAreaView  style={{ justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+    <SafeAreaView className="h-full items-center justify-center">
       <View style={style}>{children}</View>
     </SafeAreaView>
   );
