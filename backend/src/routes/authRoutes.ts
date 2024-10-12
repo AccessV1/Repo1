@@ -15,5 +15,5 @@ router.post("/register", registerUser);
 router.get("/logout", logoutUser);
 router.post("/sendVerificationCode", sendPhoneNumberVerificationCode);
 router.post("/verifyPhoneNumberCode", VerifyPhoneNumberCode);
-router.post("isPhoneNumberLinkedToUser", isPhoneNumberLinkedToUser);
+router.get("/isPhoneNumberLinkedToUser/:phoneNumber", isPhoneNumberLinkedToUser);
 export default router;

@@ -21,6 +21,7 @@ const PhoneNumberInput = ({ phoneNumber, setPhoneNumber }: any) => {
 
         {/* Phone number input field */}
         <TextInput
+          textContentType='telephoneNumber'
           className="pl-10 font-[600]"
           value={phoneNumber}
           onChangeText={handlePhoneChange}

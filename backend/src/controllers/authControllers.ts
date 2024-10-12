@@ -160,15 +160,15 @@ export const VerifyPhoneNumberCode = asyncHandler(
 
 /***
  * @desc states whether a phone number is linked to a user
- * @route POST /api/auth/isPhoneNumberLinkedToUser
+ * @route POST /api/auth/isPhoneNumberLinkedToUser/:phoneNumber
  * @access Public
- * @reqBody phoneNumber: string
+ * @reqParams phoneNumber: string
  */
 export const isPhoneNumberLinkedToUser = asyncHandler(
   async (req: Request, res: Response) => {
-    const { phoneNumber } = req.body;
+    const { phoneNumber } = req.params;
 
-    const isPhoneNumberTaken: boolean = !!(await Users.findByPhoneNumber(phoneNumber));
-    res.json({ isPhoneNumberTaken });
+    const isPhoneNumberLinkedToUser: boolean = !!(await Users.findByPhoneNumber(phoneNumber));
+    res.json({ isPhoneNumberLinkedToUser });
   }
 );
