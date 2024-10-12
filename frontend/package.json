@@ -11,6 +11,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-navigation/native": "^6.1.18",
+    "@react-navigation/stack": "^6.4.1",
     "babel-preset-expo": "^11.0.14",
     "clsx": "^2.1.1",
     "expo": "^51.0.35",
