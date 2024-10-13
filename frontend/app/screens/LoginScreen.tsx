@@ -23,7 +23,7 @@ const socials: Array<{ name: string; img: any }> = [
   { name: 'applelogo', img: require('../assets/images/applelogo.png') },
 ];
 
-const { width } = Dimensions.get('window'); // Get screen dimensions for responsive design
+const { width, height } = Dimensions.get('window'); // Get screen dimensions for responsive design
 const dynamicWidth = width * 0.9; // react native doesnt support vw so we have to save a dynamic width we want to use
 
 function LoginScreen() {
@@ -67,7 +67,9 @@ function LoginScreen() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View className="m-auto flex-1 pt-[50]" style={{ width: dynamicWidth }}>
         {/* Logo image */}
+      
         <Image
+        style= {{width: 218, height: height * 0.2}}
           className="mx-auto mb-10 h-[218] w-[218]"
           source={require('../assets/images/openlogo1.png')}
           resizeMode="contain"
@@ -90,8 +92,8 @@ function LoginScreen() {
             <Text className="pt-[25] pb-[10] text-gray-500 underline">Use password instead</Text>
           </TouchableOpacity>
         </View>
+        <Text style={{paddingTop: height * 0.06, paddingBottom: height *0.05 } } className="mx-auto  font-[600] text-[15] text-black">OR</Text>
 
-        <Text className="mx-auto pb-10 pt-[25] font-[600] text-[15] text-black">OR</Text>
         <Text className="mx-auto  pb-5 font-[600] text-[15] text-black">Sign in with</Text>
 
         {/* component for login with Google, Facebook, etc. */}
