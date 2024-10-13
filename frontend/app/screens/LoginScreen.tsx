@@ -47,6 +47,7 @@ function LoginScreen() {
     }
   }, [phoneNumber]);
 
+
   const handleSendVerificationCode = async () => {
     if (phoneNumber) {
       try {
@@ -86,8 +87,10 @@ function LoginScreen() {
             onPress={handleSendVerificationCode}
             title="Get Verification Code"
           />
-          <TouchableOpacity>
-            <Text className="pt-[25] pb-[10] text-gray-500 underline">Use password instead</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('loginWithEmailOrUsername')}>
+            <Text className="pb-[10] pt-[25] text-gray-500 underline">
+              Use email or username instead
+            </Text>
           </TouchableOpacity>
         </View>
 
