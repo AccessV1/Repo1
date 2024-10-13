@@ -15,6 +15,7 @@ import { useAuthStore } from 'app/globalStore/authStore';
 import { useNavigation } from '@react-navigation/native';
 import { AuthStackParamList } from 'app/navigation/AuthStack';
 import type { StackNavigationProp } from '@react-navigation/stack';
+import { serializePhoneNumber } from 'app/utils';
 import { API_URL } from 'app/apiUrl';
 import clsx from 'clsx';
 const socials: Array<{ name: string; img: any }> = [
@@ -29,6 +30,7 @@ const dynamicWidth = width * 0.9; // react native doesnt support vw so we have t
 function LoginScreen() {
   const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
   const { phoneNumber, setPhoneNumber } = useAuthStore();
+  const [countryCode, setCountryCode] = useState<string>('1');
   const [phoneNumberNotFound, setPhoneNumberNotFound] = useState<boolean>(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true); // State to track if the button should be disabled
 
@@ -47,11 +49,12 @@ function LoginScreen() {
     }
   }, [phoneNumber]);
 
-
   const handleSendVerificationCode = async () => {
     if (phoneNumber) {
       try {
-        const res = await fetch(`${API_URL}/auth/isPhoneNumberLinkedToUser/${phoneNumber}`);
+        const res = await fetch(
+          `${API_URL}/auth/isPhoneNumberLinkedToUser/${serializePhoneNumber(phoneNumber, countryCode)}`
+        );
         const { isPhoneNumberLinkedToUser } = await res.json();
         if (!isPhoneNumberLinkedToUser) {
           setPhoneNumberNotFound(true);
@@ -75,7 +78,12 @@ function LoginScreen() {
         />
 
         <View className="items-center justify-center">
-          <PhoneNumberInput phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} />
+          <PhoneNumberInput
+            countryCode={countryCode}
+            setCountryCode={setCountryCode}
+            phoneNumber={phoneNumber}
+            setPhoneNumber={setPhoneNumber}
+          />
           {/* Custom Button component; disabled when phone number is not valid */}
 
           <Text className={`mb-5 text-red-600 ${phoneNumberNotFound ? '' : 'hidden'}`}>
@@ -101,11 +109,13 @@ function LoginScreen() {
         <SocialButtons socials={socials} />
 
         {/* Link to sign up for new users */}
-        <View className="flex-row">
-          <Text className="mx-auto pt-[30] font-[600] text-[15] text-colors-gray">
-            Create a New Account?{' '}
-            <Text className="mx-auto pt-10 font-[600] text-[15] text-colors-primary">Sign Up</Text>
+        <View className="flex-row items-center justify-center pt-[30]">
+          <Text className="  font-[600] text-[15] text-colors-gray">
+            Don't have an account yet ?{' '}
           </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('phoneNumberRegistration')}>
+            <Text className="  font-[600] text-[15] text-colors-primary">Sign Up</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableWithoutFeedback>

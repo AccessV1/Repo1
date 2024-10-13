@@ -1,16 +1,18 @@
 import { View, Text, Image } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from 'app/screens/LoginScreen';
-import { PhoneNumberVerificationScreen } from 'app/screens/PhoneNumberVerificationScreen';
+import { PhoneNumberVerificationScreen } from 'app/components/ui/PhoneNumberVerificationScreen';
 import { RootLayout } from 'app/layouts/RootLayout';
 import React from 'react';
 import { LoginWithEmailOrUsernameScreen } from 'app/screens/LoginWithEmailOrUsernameScreen';
 import { BackArrow } from 'app/assets/icons/BackArrow';
+import { PhoneNumberRegistrationScreen } from 'app/screens/PhoneNumberRegistrationScreen';
 
 export type AuthStackParamList = {
   login: undefined;
   verifyPhoneNumber: undefined;
   loginWithEmailOrUsername: undefined;
+  phoneNumberRegistration: undefined;
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -24,6 +26,7 @@ const authScreens: AuthScreen[] = [
     component: PhoneNumberVerificationScreen,
   },
   { name: 'loginWithEmailOrUsername', component: LoginWithEmailOrUsernameScreen },
+  { name: 'phoneNumberRegistration', component: PhoneNumberRegistrationScreen },
 ];
 
 export const AuthStack = () => {
@@ -40,9 +43,11 @@ export const AuthStack = () => {
       }}>
       {authScreens.map((screen: AuthScreen) => (
         <Stack.Screen
-              options={{
-              headerBackTitleVisible: false,
-            headerBackImage: () => <Image className="ml-5" source={require('../assets/images/backArrow.png')} />,
+          options={{
+            headerBackTitleVisible: false,
+            headerBackImage: () => (
+              <Image className="ml-5" source={require('../assets/images/backArrow.png')} />
+            ),
           }}
           key={screen.name}
           name={screen.name}
