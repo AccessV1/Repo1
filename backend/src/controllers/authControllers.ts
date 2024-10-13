@@ -3,12 +3,11 @@ import { asyncHandler } from "../utils/asyncHandler";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import { Users } from "../models/User";
-import { User } from "@prisma/client";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwtHelpers";
 import { ProtectedRequest } from "../types";
-import { RefreshToken } from "@prisma/client";
 import { RefreshTokens } from "../models/RefreshToken";
 import { UserWithOptionalPassword } from "../types";
+import * as NumberVerificationHelpers from "../utils/numberVerificationHelpers";
 dotenv.config({ path: "../.env" });
 
 /**
@@ -73,7 +72,6 @@ export const checkUserExistance = asyncHandler(
 export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { emailOrUsername, password } = req.body;
 
-
   const user = (await Users.findByEmailOrUsername(
     emailOrUsername
   )) as UserWithOptionalPassword;
@@ -101,7 +99,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
  */
 export const getUser = asyncHandler(
   async (req: ProtectedRequest, res: Response) => {
-    res.send({user: req.user})
+    res.send({ user: req.user });
   }
 );
 
@@ -125,3 +123,52 @@ export const logoutUser = asyncHandler(async (req: Request, res: Response) => {
   await RefreshTokens.delete(decoded.id, refreshToken);
   res.json({ message: "Successfully logged out" });
 });
+
+/***
+ * @desc sends a verification code to a given phone number
+ * @route POST /api/auth/sendVerificationCode
+ * @access Public
+ * @reqBody PhoneNumber: string
+ */
+export const sendPhoneNumberVerificationCode = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { phoneNumber } = req.body;
+
+    const verfication =
+      await NumberVerificationHelpers.sendVerificationCodeByMsg(phoneNumber);
+    res.json({ success: true });
+  }
+);
+
+/***
+ * @desc verifies a phone number verification code
+ * @route POST /api/auth/verifyPhoneNumberCode
+ * @access Public
+ * @reqBody phoneNumber: string, code: string
+ */
+export const VerifyPhoneNumberCode = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { phoneNumber, code } = req.body;
+
+    const isVerified = await NumberVerificationHelpers.verifyPhoneNumber(
+      phoneNumber,
+      code
+    );
+    res.json({ isVerified: isVerified.success });
+  }
+);
+
+/***
+ * @desc states whether a phone number is linked to a user
+ * @route POST /api/auth/isPhoneNumberLinkedToUser/:phoneNumber
+ * @access Public
+ * @reqParams phoneNumber: string
+ */
+export const isPhoneNumberLinkedToUser = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { phoneNumber } = req.params;
+
+    const isPhoneNumberLinkedToUser: boolean = !!(await Users.findByPhoneNumber(phoneNumber));
+    res.json({ isPhoneNumberLinkedToUser });
+  }
+);

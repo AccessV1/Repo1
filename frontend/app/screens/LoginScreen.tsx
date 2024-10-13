@@ -2,8 +2,21 @@ import { useState, useEffect } from 'react';
 import ConditionalButton from 'app/components/ui/ConditionalButton';
 import PhoneNumberInput from 'app/components/ui/PhoneNumberInput';
 import SocialButtons from 'app/components/ui/SocialButtons';
-import { View, Text, Image, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
-
+import {
+  View,
+  Text,
+  Image,
+  Dimensions,
+  TouchableWithoutFeedback,
+  Keyboard,
+  TouchableOpacity,
+} from 'react-native';
+import { useAuthStore } from 'app/globalStore/authStore';
+import { useNavigation } from '@react-navigation/native';
+import { AuthStackParamList } from 'app/navigation/AuthStack';
+import type { StackNavigationProp } from '@react-navigation/stack';
+import { API_URL } from 'app/apiUrl';
+import clsx from 'clsx';
 const socials: Array<{ name: string; img: any }> = [
   { name: 'Google', img: require('../assets/images/googlelogo.png') },
   { name: 'Facebook', img: require('../assets/images/facebooklogo.png') },
@@ -14,7 +27,9 @@ const { width, height } = Dimensions.get('window'); // Get screen dimensions for
 const dynamicWidth = width * 0.9; // react native doesnt support vw so we have to save a dynamic width we want to use
 
 function LoginScreen() {
-  const [phoneNumber, setPhoneNumber] = useState<string | undefined>(); // State to hold the phone number input
+  const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
+  const { phoneNumber, setPhoneNumber } = useAuthStore();
+  const [phoneNumberNotFound, setPhoneNumberNotFound] = useState<boolean>(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true); // State to track if the button should be disabled
 
   useEffect(() => {
@@ -26,6 +41,27 @@ function LoginScreen() {
     }
   }, [phoneNumber]);
 
+  useEffect(() => {
+    if (phoneNumberNotFound) {
+      setPhoneNumberNotFound(false);
+    }
+  }, [phoneNumber]);
+
+  const handleSendVerificationCode = async () => {
+    if (phoneNumber) {
+      try {
+        const res = await fetch(`${API_URL}/auth/isPhoneNumberLinkedToUser/${phoneNumber}`);
+        const { isPhoneNumberLinkedToUser } = await res.json();
+        if (!isPhoneNumberLinkedToUser) {
+          setPhoneNumberNotFound(true);
+        } else {
+          navigation.navigate('verifyPhoneNumber');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
   return (
     // TouchableWithoutFeedback is used to dismiss the keyboard when tapping outside the input field
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -39,13 +75,25 @@ function LoginScreen() {
           resizeMode="contain"
         />
 
-        <View>
+        <View className="items-center justify-center">
           <PhoneNumberInput phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} />
           {/* Custom Button component; disabled when phone number is not valid */}
-          <ConditionalButton disabled={isButtonDisabled} title="Get Verification Code" />
-        </View>
 
+          <Text className={`mb-5 text-red-600 ${phoneNumberNotFound ? '' : 'hidden'}`}>
+            Phone number not found
+          </Text>
+          <ConditionalButton
+            className="w-full"
+            disabled={isButtonDisabled}
+            onPress={handleSendVerificationCode}
+            title="Get Verification Code"
+          />
+          <TouchableOpacity>
+            <Text className="pt-[25] pb-[10] text-gray-500 underline">Use password instead</Text>
+          </TouchableOpacity>
+        </View>
         <Text style={{paddingTop: height * 0.06, paddingBottom: height *0.05 } } className="mx-auto  font-[600] text-[15] text-black">OR</Text>
+
         <Text className="mx-auto  pb-5 font-[600] text-[15] text-black">Sign in with</Text>
 
         {/* component for login with Google, Facebook, etc. */}
@@ -53,9 +101,9 @@ function LoginScreen() {
 
         {/* Link to sign up for new users */}
         <View className="flex-row">
-          <Text className="text-colors-gray mx-auto pt-[30] font-[600] text-[15]">
+          <Text className="mx-auto pt-[30] font-[600] text-[15] text-colors-gray">
             Create a New Account?{' '}
-            <Text className="text-colors-primary mx-auto pt-10 font-[600] text-[15]">Sign Up</Text>
+            <Text className="mx-auto pt-10 font-[600] text-[15] text-colors-primary">Sign Up</Text>
           </Text>
         </View>
       </View>
