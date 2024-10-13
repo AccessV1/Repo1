@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Image, TextInput } from 'react-native';
 import flagImages from './data/flagImages'; // Image paths for country flags (mapped to require() statements)
+import { ImageSourcePropType } from 'react-native';
+interface CountryCodeSelectProps {
+  countryCode: string;
+  setCountryCode: React.Dispatch<React.SetStateAction<string>>;
+}
 
-function CountryCodeSelect() {
-  const [countryCode, setCountryCode] = useState<string>('1');
-  const [countryImg, setCountryImg] = useState<any>(flagImages['us']);
+const CountryCodeSelect: React.FC<CountryCodeSelectProps> = ({ countryCode, setCountryCode }) => {
+  const [countryImg, setCountryImg] = useState<ImageSourcePropType | null>(flagImages['us']);
 
   useEffect(() => {
     const country = flagImages[`+${countryCode}`];
@@ -19,7 +23,7 @@ function CountryCodeSelect() {
     <View className="my-auto flex-row">
       {/* If no code is found then dont show any flag */}
       <View className={`mr-[10] overflow-hidden  rounded-full  ${!countryImg && 'opacity-0'}`}>
-        <Image className="h-[24] w-[24]" source={countryImg} />
+        <Image className="h-[24] w-[24]" source={countryImg as ImageSourcePropType} />
       </View>
       <Text className="my-auto font-[600]">+ </Text>
       <TextInput
@@ -36,6 +40,6 @@ function CountryCodeSelect() {
       />
     </View>
   );
-}
+};
 
 export default CountryCodeSelect;
