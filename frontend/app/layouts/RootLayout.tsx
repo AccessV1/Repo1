@@ -13,7 +13,7 @@ export const RootLayout: React.FC<RootLayoutProps> = ({
   className,
 }): React.ReactNode => {
   return (
-    <SafeAreaView className={`h-full items-center  ${className}`}>
+    <SafeAreaView className={`h-full items-center   ${className}`}>
       <View style={style}>{children}</View>
     </SafeAreaView>
   );

@@ -1,7 +1,7 @@
 import { View, Text, Image } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from 'app/screens/LoginScreen';
-import { PhoneNumberVerificationScreen } from 'app/components/ui/PhoneNumberVerificationScreen';
+import { PhoneNumberVerificationScreen } from 'app/screens/PhoneNumberVerificationScreen';
 import { RootLayout } from 'app/layouts/RootLayout';
 import React from 'react';
 import { LoginWithEmailOrUsernameScreen } from 'app/screens/LoginWithEmailOrUsernameScreen';
