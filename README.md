@@ -42,3 +42,7 @@ If all goes well a QR Code will appear which you can scan with your phone, it wi
 
 - In your terminal, start by clearing your cache with ```npm cache clean --force```. You will see it clear. After that, make sure you have no node_modules folder. Do ```rm -rf node_modules``` which will remove the node_modules folder (If applicable).  
 Finally, you can do ```npm install``` which will install all dependencies.  
+
+## Possible Issues
+
+If for any reason you get an error when trying to ```npm start``` then delete node_modules with ```rm -rf node_modules``` & then ```npm install``` from the root repo again. (issues with cache happen often)
