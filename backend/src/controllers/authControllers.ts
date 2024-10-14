@@ -154,6 +154,7 @@ export const VerifyPhoneNumberCode = asyncHandler(
       phoneNumber,
       code
     );
+    console.log("isVerified", isVerified)
     res.json({ isVerified: isVerified.success });
   }
 );

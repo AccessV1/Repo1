@@ -25,15 +25,16 @@ export const PhoneNumberRegistrationScreen = () => {
   const handleSendVerificationCode = async () => {
     if (phoneNumber) {
       try {
-        // const res = await fetch(`${API_URL}/auth/sendVerificationCode`, {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({ phoneNumber: serializePhoneNumber(phoneNumber, countryCode) }),
-        // });
-        // const response = await res.json();
-        navigation.navigate('verifyPhoneNumber');
+        const res = await fetch(`${API_URL}/auth/sendVerificationCode`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ phoneNumber: serializePhoneNumber(phoneNumber, countryCode) }),
+        });
+        const response = await res.json();
+          navigation.navigate('verifyPhoneNumber');
+
       } catch (err) {
         console.error(err);
       }
@@ -49,10 +50,7 @@ export const PhoneNumberRegistrationScreen = () => {
             <Text className="text-4xl font-semibold text-black">Started</Text>
           </View>
           <View>
-            <PhoneNumberInput
-              phoneNumber={phoneNumber}
-              setPhoneNumber={setPhoneNumber}
-            />
+            <PhoneNumberInput phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} />
           </View>
         </View>
         <ConditionalButton

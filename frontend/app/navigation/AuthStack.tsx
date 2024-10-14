@@ -7,12 +7,14 @@ import React from 'react';
 import { LoginWithEmailOrUsernameScreen } from 'app/screens/LoginWithEmailOrUsernameScreen';
 import { BackArrow } from 'app/assets/icons/BackArrow';
 import { PhoneNumberRegistrationScreen } from 'app/screens/PhoneNumberRegistrationScreen';
+import { additionalRegistrationInfo } from 'app/screens/AdditionalRegistrationInfoScreen';
 
 export type AuthStackParamList = {
   login: undefined;
   verifyPhoneNumber: undefined;
   loginWithEmailOrUsername: undefined;
   phoneNumberRegistration: undefined;
+  additionalRegistrationInfo: undefined;
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -27,6 +29,7 @@ const authScreens: AuthScreen[] = [
   },
   { name: 'loginWithEmailOrUsername', component: LoginWithEmailOrUsernameScreen },
   { name: 'phoneNumberRegistration', component: PhoneNumberRegistrationScreen },
+  { name: 'additionalRegistrationInfo', component: additionalRegistrationInfo },
 ];
 
 export const AuthStack = () => {
