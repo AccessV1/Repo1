@@ -29,8 +29,8 @@ const dynamicWidth = width * 0.9; // react native doesnt support vw so we have t
 
 function LoginScreen() {
   const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
-  const { phoneNumber, setPhoneNumber } = useAuthStore();
-  const [countryCode, setCountryCode] = useState<string>('1');
+  const { phoneNumber, setPhoneNumber, countryCode} = useAuthStore();
+
   const [phoneNumberNotFound, setPhoneNumberNotFound] = useState<boolean>(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true); // State to track if the button should be disabled
 
@@ -68,8 +68,8 @@ function LoginScreen() {
   };
   return (
     // TouchableWithoutFeedback is used to dismiss the keyboard when tapping outside the input field
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="m-auto flex-1 pt-[50]" style={{ width: dynamicWidth }}>
+    <TouchableWithoutFeedback className="" onPress={Keyboard.dismiss} accessible={false}>
+      <View className="m-auto  flex-1 pt-[50]" style={{ width: dynamicWidth }}>
         {/* Logo image */}
       
         <Image
@@ -81,8 +81,6 @@ function LoginScreen() {
 
         <View className="items-center justify-center">
           <PhoneNumberInput
-            countryCode={countryCode}
-            setCountryCode={setCountryCode}
             phoneNumber={phoneNumber}
             setPhoneNumber={setPhoneNumber}
           />
@@ -98,7 +96,7 @@ function LoginScreen() {
             title="Get Verification Code"
           />
           <TouchableOpacity onPress={() => navigation.navigate('loginWithEmailOrUsername')}>
-            <Text className="pb-[10] pt-[25] text-gray-500 underline">
+            <Text className=" pt-[25] text-gray-500 underline">
               Use email or username instead
             </Text>
           </TouchableOpacity>

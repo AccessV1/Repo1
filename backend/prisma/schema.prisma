@@ -35,6 +35,7 @@ model RefreshToken {
   expiresAt DateTime
 }
 
+
 model Service {
   service_id          String   @id @default(uuid())
   service_name        String

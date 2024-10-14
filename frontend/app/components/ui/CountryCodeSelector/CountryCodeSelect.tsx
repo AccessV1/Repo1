@@ -2,12 +2,11 @@ import { useState, useEffect } from 'react';
 import { View, Text, Image, TextInput } from 'react-native';
 import flagImages from './data/flagImages'; // Image paths for country flags (mapped to require() statements)
 import { ImageSourcePropType } from 'react-native';
-interface CountryCodeSelectProps {
-  countryCode: string;
-  setCountryCode: React.Dispatch<React.SetStateAction<string>>;
-}
+import { useAuthStore } from 'app/globalStore/authStore';
 
-const CountryCodeSelect: React.FC<CountryCodeSelectProps> = ({ countryCode, setCountryCode }) => {
+
+const CountryCodeSelect: React.FC = () => {
+  const {countryCode, setCountryCode} = useAuthStore()
   const [countryImg, setCountryImg] = useState<ImageSourcePropType | null>(flagImages['us']);
 
   useEffect(() => {

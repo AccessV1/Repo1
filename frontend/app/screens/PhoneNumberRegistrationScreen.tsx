@@ -33,7 +33,8 @@ export const PhoneNumberRegistrationScreen = () => {
           body: JSON.stringify({ phoneNumber: serializePhoneNumber(phoneNumber, countryCode) }),
         });
         const response = await res.json();
-        navigation.navigate('verifyPhoneNumber');
+          navigation.navigate('verifyPhoneNumber');
+
       } catch (err) {
         console.error(err);
       }
@@ -43,18 +44,13 @@ export const PhoneNumberRegistrationScreen = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View className="items-center">
-        <View className=" h-full pt-[20vh]">
+        <View className=" h-full pt-[15vh]">
           <View className="mb-8 flex-col items-start gap-1">
             <Text className="text-4xl font-semibold text-colors-primary">Get</Text>
             <Text className="text-4xl font-semibold text-black">Started</Text>
           </View>
           <View>
-            <PhoneNumberInput
-              countryCode={countryCode}
-              setCountryCode={setCountryCode}
-              phoneNumber={phoneNumber}
-              setPhoneNumber={setPhoneNumber}
-            />
+            <PhoneNumberInput phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} />
           </View>
         </View>
         <ConditionalButton

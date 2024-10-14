@@ -3,8 +3,9 @@ import { create } from 'zustand';
 interface AuthState {
   phoneNumber: string;
   setPhoneNumber: (phoneNumber: string) => void;
+  countryCode: string;
+  setCountryCode: (countryCode: string) => void;
 }
-
 
 /**
  * Zustand store for managing authentication state.
@@ -19,4 +20,6 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   phoneNumber: '',
   setPhoneNumber: (phoneNumber: string) => set({ phoneNumber }),
+  countryCode: '1',
+  setCountryCode: (countryCode: string) => set({ countryCode }),
 }));
