@@ -39,10 +39,10 @@ export const PhoneNumberVerificationScreen = () => {
   };
 
   const onVerifyCode = async () => {
-    // if (!isNumeric(otp.join(''))) {
-    //   setError(true);
-    //   return;
-    // }
+    if (!isNumeric(otp.join(''))) {
+      setError(true);
+      return;
+    }
     try {
       const res = await fetch(`${API_URL}/auth/verifyPhoneNumberCode`, {
         method: 'POST',
