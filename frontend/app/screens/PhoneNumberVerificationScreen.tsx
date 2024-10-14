@@ -6,7 +6,7 @@ import { useAuthStore } from 'app/globalStore/authStore';
 import { AuthStackParamList } from 'app/navigation/AuthStack';
 import { isNumeric, serializePhoneNumber } from 'app/utils';
 import React, { useEffect } from 'react';
-import { View, Text, TouchableWithoutFeedback, TextInput } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, TextInput, TouchableOpacity } from 'react-native';
 
 export const PhoneNumberVerificationScreen = () => {
   const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
@@ -56,8 +56,8 @@ export const PhoneNumberVerificationScreen = () => {
       });
       const response = await res.json();
       if (response.isVerified) {
-      navigation.navigate('additionalRegistrationInfo');
-    }
+        navigation.navigate('additionalRegistrationInfo');
+      }
     } catch (err) {
       setError(true);
     }
@@ -138,7 +138,9 @@ export const PhoneNumberVerificationScreen = () => {
         </View>
         <View className="w-full items-center pt-10 ">
           {allowResend ? (
-            <Text className="underlined text-colors-primary ">Resend code</Text>
+            <TouchableOpacity onPress={onVerifyCode}>
+              <Text className="underlined text-colors-primary ">Resend code</Text>
+            </TouchableOpacity>
           ) : (
             <Text>
               Re-send code in <Text className="text-colors-primary">{codeCountdown}</Text>{' '}
