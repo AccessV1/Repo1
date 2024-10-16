@@ -1,25 +1,14 @@
 import { create } from 'zustand';
 
-interface AuthState {
-  phoneNumber: string;
-  setPhoneNumber: (phoneNumber: string) => void;
-  countryCode: string;
-  setCountryCode: (countryCode: string) => void;
+export interface AuthState {
+  isLoggedIn: boolean;
+  setIsLoggedIn: (bool: boolean) => void;
 }
 
 /**
- * Zustand store for managing authentication state.
- *
- * #### Example:
- * ```js
- * // Random Auth related screen component
- * const { phoneNumber, setPhoneNumber } = useAuthStore();
- * setPhoneNumber('1234567890');
- * ```
+ * Zustand store for managing user data / auth
  */
 export const useAuthStore = create<AuthState>((set) => ({
-  phoneNumber: '',
-  setPhoneNumber: (phoneNumber: string) => set({ phoneNumber }),
-  countryCode: '1',
-  setCountryCode: (countryCode: string) => set({ countryCode }),
+  isLoggedIn: false,
+  setIsLoggedIn: (bool: boolean) => set({ isLoggedIn: bool }),
 }));

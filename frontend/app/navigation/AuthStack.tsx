@@ -5,16 +5,15 @@ import { PhoneNumberVerificationScreen } from 'app/screens/PhoneNumberVerificati
 import { RootLayout } from 'app/layouts/RootLayout';
 import React from 'react';
 import { LoginWithEmailOrUsernameScreen } from 'app/screens/LoginWithEmailOrUsernameScreen';
-import { BackArrow } from 'app/assets/icons/BackArrow';
-import { PhoneNumberRegistrationScreen } from 'app/screens/PhoneNumberRegistrationScreen';
-import { additionalRegistrationInfo } from 'app/screens/AdditionalRegistrationInfoScreen';
+import { PhoneNumberLoginAndRegistrationScreen } from 'app/screens/PhoneNumberRegistrationScreen';
+import { AdditionalRegistrationInfoScreen } from 'app/screens/AdditionalRegistrationInfoScreen';
 
 export type AuthStackParamList = {
   login: undefined;
   verifyPhoneNumber: undefined;
   loginWithEmailOrUsername: undefined;
-  phoneNumberRegistration: undefined;
-  additionalRegistrationInfo: undefined;
+  phoneNumberLoginAndRegistration: undefined;
+  additionalLoginAndRegistrationInfo: undefined;
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -28,8 +27,11 @@ const authScreens: AuthScreen[] = [
     component: PhoneNumberVerificationScreen,
   },
   { name: 'loginWithEmailOrUsername', component: LoginWithEmailOrUsernameScreen },
-  { name: 'phoneNumberRegistration', component: PhoneNumberRegistrationScreen },
-  { name: 'additionalRegistrationInfo', component: additionalRegistrationInfo },
+  { name: 'phoneNumberLoginAndRegistration', component: PhoneNumberLoginAndRegistrationScreen },
+  {
+    name: 'additionalLoginAndRegistrationInfo',
+    component: AdditionalRegistrationInfoScreen,
+  },
 ];
 
 export const AuthStack = () => {

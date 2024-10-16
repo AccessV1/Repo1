@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { API_URL } from 'app/apiUrl';
 import ConditionalButton from 'app/components/ui/ConditionalButton';
-import { useAuthStore } from 'app/globalStore/authStore';
+import { useLoginAndRegistrationStore } from 'app/globalStore/LoginAndRegistrationStore';
 import { AuthStackParamList } from 'app/navigation/AuthStack';
 import { isNumeric, serializePhoneNumber } from 'app/utils';
 import React, { useEffect } from 'react';
@@ -11,7 +11,7 @@ import { View, Text, TouchableWithoutFeedback, TextInput, TouchableOpacity } fro
 export const PhoneNumberVerificationScreen = () => {
   const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
   const inputsRef = React.useRef<Array<TextInput | null>>([]);
-  const { phoneNumber, countryCode } = useAuthStore();
+  const { phoneNumber, countryCode } = useLoginAndRegistrationStore();
   const [isButtonDisabled, setIsButtonDisabled] = React.useState<boolean>(true);
   const [error, setError] = React.useState<boolean>(false);
   const [allowResend, setAllowResend] = React.useState<boolean>(false);
@@ -56,7 +56,7 @@ export const PhoneNumberVerificationScreen = () => {
       });
       const response = await res.json();
       if (response.isVerified) {
-        navigation.navigate('additionalRegistrationInfo');
+        navigation.navigate('additionalLoginAndRegistrationInfo');
       }
     } catch (err) {
       setError(true);
