@@ -38,7 +38,7 @@ export const registerUser = asyncHandler(
     })) as UserWithOptionalPassword;
 
     if (newUser) {
-      const refreshToken = await generateRefreshToken(res, newUser.id!);
+      const refreshToken = await generateRefreshToken(newUser.id!);
       const accessToken = generateAccessToken(newUser.id!);
       delete newUser.password;
 
@@ -77,7 +77,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   )) as UserWithOptionalPassword;
 
   if (user && (await Users.verifyPassword(password, user.password as string))) {
-    const refreshToken = await generateRefreshToken(res, user.id!);
+    const refreshToken = await generateRefreshToken(user.id!);
     const accessToken = generateAccessToken(user.id!);
     delete user.password;
 
@@ -108,6 +108,43 @@ export const getUser = asyncHandler(
  * @route GET /api/auth/logout
  * @access Private
  */
+
+export const googleCallback = asyncHandler(
+  async (req: Request, res: Response) => {
+    const user = req.user as User;
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    try {
+      const accessToken = generateAccessToken(user.id);
+      const refreshToken = await generateRefreshToken(user.id);
+      res.json({ user, accessToken, refreshToken });
+    } catch (error) {
+      res.status(500).json({ message: "Token generation failed", error });
+    }
+  }
+);
+
+export const facebookCallback = asyncHandler(
+  async (req: Request, res: Response) => {
+    const user = req.user as User;
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    try {
+      const accessToken = generateAccessToken(user.id);
+      const refreshToken = await generateRefreshToken(user.id);
+      res.json({ user, accessToken, refreshToken });
+    } catch (error) {
+      res.status(500).json({ message: "Token generation failed", error });
+    }
+  }
+);
+
 export const logoutUser = asyncHandler(async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
 
