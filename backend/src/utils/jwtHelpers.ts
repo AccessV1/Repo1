@@ -19,10 +19,7 @@ export const generateAccessToken = (id: string): string => {
  * @param id - User ID
  * @returns Refresh Token
  */
-export const generateRefreshToken = async (
-  res: Response,
-  id: string
-): Promise<string> => {
+export const generateRefreshToken = async (id: string): Promise<string> => {
   const refreshToken = jwt.sign({ id }, process.env.JWT_REFRESH_SECRET!, {
     expiresIn: "14d",
   });
