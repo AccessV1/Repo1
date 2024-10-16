@@ -22,6 +22,16 @@ export class Users {
     return user;
   }
 
+  static async findByPhoneNumber(phoneNumber: string): Promise<User | null> {
+    const user: User | null = await db.user.findFirst({
+      where: {
+        phoneNumber,
+      },
+    });
+
+    return user;
+  }
+
   /**
    * Find a user by their ID.
    * @param id - User ID

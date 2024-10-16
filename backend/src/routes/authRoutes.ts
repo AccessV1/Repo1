@@ -5,6 +5,9 @@ import {
   logoutUser,
   googleCallback,
   facebookCallback,
+  sendPhoneNumberVerificationCode,
+  VerifyPhoneNumberCode,
+  isPhoneNumberLinkedToUser,
 } from "../controllers/authControllers";
 import passport from "../utils/passport";
 
@@ -36,4 +39,10 @@ router.get(
   facebookCallback
 );
 
+router.post("/sendVerificationCode", sendPhoneNumberVerificationCode);
+router.post("/verifyPhoneNumberCode", VerifyPhoneNumberCode);
+router.get(
+  "/isPhoneNumberLinkedToUser/:phoneNumber",
+  isPhoneNumberLinkedToUser
+);
 export default router;

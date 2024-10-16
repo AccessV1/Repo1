@@ -19,7 +19,8 @@
     "typescript": "^5.6.2",
     "undici-types": "^6.19.8",
     "v8-compile-cache-lib": "^3.0.1",
-    "yn": "^3.1.1"
+    "yn": "^3.1.1",
+    "zustand": "^5.0.0-rc.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

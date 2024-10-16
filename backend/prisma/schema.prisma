@@ -34,3 +34,24 @@ model RefreshToken {
   createdAt DateTime @default(now())
   expiresAt DateTime
 }
+
+
+model Service {
+  service_id          String   @id @default(uuid())
+  service_name        String
+  location_id         String
+  service_description String
+  service_type_id     String
+  service_price       String
+  service_availibility DateTime
+  service_license     String
+  service_images      String
+  provider_id         String
+  menu_id             String
+
+  // We need to define future relations, e.g., with Location, ServiceType, Provider, Menu
+  // location           Location @relation(fields: [location_id], references: [id])
+  // serviceType        ServiceType @relation(fields: [service_type_id], references: [id])
+  // provider           Provider @relation(fields: [provider_id], references: [id])
+  // menu               Menu @relation(fields: [menu_id], references: [id])
+}

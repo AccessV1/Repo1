@@ -49,6 +49,7 @@
     "passport-apple": "^2.0.2",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
+    "twilio": "^5.3.3",
     "uuid": "^9.0.1"
   }
 }

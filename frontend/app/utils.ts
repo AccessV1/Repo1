@@ -23,4 +23,11 @@ export const formatPhoneNumber = (phoneNumber: string) => {
 };
 
 
+export const serializePhoneNumber = (phoneNumber: string, countryCode: string) => {
+  return  `+${countryCode}${phoneNumber.replace(/\s+/g, '')}`
+}
 
+export const isNumeric = (input: string): boolean => {
+  const regex = /^\d+$/; 
+  return regex.test(input);
+};

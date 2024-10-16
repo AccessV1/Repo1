@@ -4,8 +4,16 @@ import CountryCodeSelect from './CountryCodeSelector/CountryCodeSelect';
 const { width } = Dimensions.get('window');
 const dynamicWidth = width * 0.9;
 import { formatPhoneNumber } from 'app/utils';
-
-const PhoneNumberInput = ({ phoneNumber, setPhoneNumber }: any) => {
+import React from 'react';
+import { useAuthStore } from 'app/globalStore/authStore';
+interface PhoneNumberInputProps {
+  phoneNumber: string;
+  setPhoneNumber: (phoneNumber: string) => void;
+}
+const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
+  phoneNumber,
+  setPhoneNumber,
+}: any) => {
   const handlePhoneChange = (text: string) => {
     const formattedPhoneNumber = formatPhoneNumber(text);
     setPhoneNumber(formattedPhoneNumber);
@@ -15,13 +23,14 @@ const PhoneNumberInput = ({ phoneNumber, setPhoneNumber }: any) => {
     <View>
       <Text className="pb-[10] font-[600]">Phone Number</Text>
       <View
-        className="bg-colors-lightGray mb-[20] h-[50] flex-row rounded-[8] p-[10] font-[600]"
+        className="mb-[20] h-[50] flex-row rounded-[8] bg-colors-lightGray p-[10] font-[600]"
         style={{ width: dynamicWidth }}>
         <CountryCodeSelect />
 
         {/* Phone number input field */}
         <TextInput
-          className="pl-10 font-[600]"
+          textContentType="telephoneNumber"
+          className="w-full pl-10 font-[600]"
           value={phoneNumber}
           onChangeText={handlePhoneChange}
           keyboardType="numeric"
