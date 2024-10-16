@@ -13,7 +13,7 @@ export type AuthStackParamList = {
   verifyPhoneNumber: undefined;
   loginWithEmailOrUsername: undefined;
   phoneNumberLoginAndRegistration: undefined;
-  additionalLoginAndRegistrationInfo: undefined;
+  additionalRegistrationInfo: undefined;
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -29,7 +29,7 @@ const authScreens: AuthScreen[] = [
   { name: 'loginWithEmailOrUsername', component: LoginWithEmailOrUsernameScreen },
   { name: 'phoneNumberLoginAndRegistration', component: PhoneNumberLoginAndRegistrationScreen },
   {
-    name: 'additionalLoginAndRegistrationInfo',
+    name: 'additionalRegistrationInfo',
     component: AdditionalRegistrationInfoScreen,
   },
 ];

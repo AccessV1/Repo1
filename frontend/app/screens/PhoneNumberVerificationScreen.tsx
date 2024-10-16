@@ -56,7 +56,7 @@ export const PhoneNumberVerificationScreen = () => {
       });
       const response = await res.json();
       if (response.isVerified) {
-        navigation.navigate('additionalLoginAndRegistrationInfo');
+        navigation.navigate('additionalRegistrationInfo');
       }
     } catch (err) {
       setError(true);
