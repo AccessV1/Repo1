@@ -2,7 +2,7 @@ import '../global.css';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthStack } from './navigation/AuthStack';
-import { MainStack } from './navigation/MianStack';
+import { MainStack } from './navigation/MainStack';
 import { useAuthStore } from './globalStore/authStore';
 
 export default function App() {

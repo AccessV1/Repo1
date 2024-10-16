@@ -7,7 +7,7 @@ import { serializePhoneNumber } from 'app/utils';
 import { API_URL } from 'app/apiUrl';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { MainStackParamList } from 'app/navigation/MianStack';
+import { MainStackParamList } from 'app/navigation/MainStack';
 import { useAuthStore } from 'app/globalStore/authStore';
 
 interface FormData {
