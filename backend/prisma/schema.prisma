@@ -18,10 +18,10 @@ model User {
   id        String   @id @default(uuid())
   email     String   @unique
   username  String @unique
-  phoneNumber String @unique
   firstName String
   lastName String
-  password String
+  phoneNumber Int? @unique
+  password String?
   createdAt DateTime @default(now())
   profilePicture String
   RefreshToken RefreshToken[]
