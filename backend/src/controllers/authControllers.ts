@@ -17,8 +17,15 @@ dotenv.config({ path: "../.env" });
  */
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
-    const { name, username, phoneNumber, email, password, profilePicture } =
-      req.body;
+    const {
+      firstName,
+      lastName,
+      username,
+      phoneNumber,
+      email,
+      password,
+      profilePicture,
+    } = req.body;
 
     const userExists = await Users.exists(email, username);
     if (userExists) {
@@ -29,7 +36,8 @@ export const registerUser = asyncHandler(
     const hashedPassword: string = await Users.hashPassword(password);
 
     const newUser = (await Users.create({
-      name,
+      firstName,
+      lastName,
       username,
       email,
       phoneNumber,
@@ -191,7 +199,7 @@ export const VerifyPhoneNumberCode = asyncHandler(
       phoneNumber,
       code
     );
-    console.log("isVerified", isVerified)
+    console.log("isVerified", isVerified);
     res.json({ isVerified: isVerified.success });
   }
 );
@@ -206,7 +214,8 @@ export const isPhoneNumberLinkedToUser = asyncHandler(
   async (req: Request, res: Response) => {
     const { phoneNumber } = req.params;
 
-    const isPhoneNumberLinkedToUser: boolean = !!(await Users.findByPhoneNumber(phoneNumber));
+    const isPhoneNumberLinkedToUser: boolean =
+      !!(await Users.findByPhoneNumber(phoneNumber));
     res.json({ isPhoneNumberLinkedToUser });
   }
 );
