@@ -28,4 +28,20 @@ export const getServiceById = asyncHandler(async (req: Request, res: Response) =
   }
 });
 
+/**
+ * @desc Search for services
+ * @route GET /api/services/search?query=
+ * @access Public
+ */
+
+export const searchForServices = asyncHandler(async (req: Request, res: Response) => {
+  const { query } = req.query;
+  const services = await Services.search(query as string);
+  if (services) {
+    res.json(services)
+  } else {
+    res.status(404).json({ message: "No services found" })
+  }
+})
+
 // Future methods: update, delete, list all services

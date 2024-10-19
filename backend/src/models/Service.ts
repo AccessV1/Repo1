@@ -28,5 +28,28 @@ export class Services {
     return service;
   }
 
+  static async search(query: string) {
+    const service = await db.service.findMany({
+      where:{
+        OR:[
+          {
+            service_name: {
+              contains: query,
+              mode: 'insensitive'
+            }
+          },
+          {
+            service_description: {
+              contains: query,
+              mode: 'insensitive'
+            }
+          }
+        ]
+      }
+    })
+
+    return service
+  }
+
   // future methods:update, delete, list all services @Brandon Ramos
 }
