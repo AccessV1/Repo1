@@ -15,16 +15,18 @@ datasource db {
 
 //  we can add things as we go
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  username  String @unique
-  firstName String
-  lastName String
-  phoneNumber Int? @unique
-  password String?
-  createdAt DateTime @default(now())
-  profilePicture String
-  RefreshToken RefreshToken[]
+  id              String           @id @default(uuid())
+  email           String           @unique
+  username        String           @unique
+  firstName       String
+  lastName        String
+  phoneNumber     Int?             @unique
+  password        String?
+  createdAt       DateTime         @default(now())
+  profilePicture  String
+  RefreshToken    RefreshToken[]
+  ServiceProvider ServiceProvider?
+  Customer        Customer?
 }
 
 model RefreshToken {
@@ -36,23 +38,105 @@ model RefreshToken {
   expiresAt DateTime
 }
 
-
 model Service {
-  service_id          String   @id @default(uuid())
-  service_name        String
-  location_id         String
-  service_description String
-  service_type_id     String
-  service_price       String
+  service_id           String   @id @default(uuid())
+  service_name         String
+  location_id          String
+  service_description  String
+  service_type_id      String
+  service_price        String
   service_availibility DateTime
-  service_license     String
-  service_images      String
-  provider_id         String
-  menu_id             String
+  service_license      String
+  service_images       String
+  provider_id          String
+  menu_id              String
 
-  // We need to define future relations, e.g., with Location, ServiceType, Provider, Menu
-  // location           Location @relation(fields: [location_id], references: [id])
-  // serviceType        ServiceType @relation(fields: [service_type_id], references: [id])
-  // provider           Provider @relation(fields: [provider_id], references: [id])
-  // menu               Menu @relation(fields: [menu_id], references: [id])
+  serviceImages ServiceImages[]
+  menu          Menu            @relation(fields: [menu_id], references: [menu_id])
+}
+
+model ServiceProvider {
+  provider_id      String @id @default(uuid())
+  user_id          String @unique
+  provider_name    String
+  provider_email   String
+  provider_contact String
+  provider_rating  Int
+  location_id      String
+
+  user     User     @relation(fields: [user_id], references: [id])
+  location Location @relation(fields: [location_id], references: [location_id])
+}
+
+model Location {
+  location_id      String @id @default(uuid())
+  location_address String
+  location_city    String
+  location_zip     Int
+  location_country String
+  location_state   String
+
+  ServiceProvider ServiceProvider[]
+  Orders          Orders[]
+}
+
+model Orders {
+  order_id          String @id @default(uuid())
+  order_description String
+  order_price       String
+  order_list        String
+  order_status      String
+  location_id       String
+  customer_id       String
+
+  location Location @relation(fields: [location_id], references: [location_id])
+  customer Customer @relation(fields: [customer_id], references: [customer_id])
+}
+
+model Customer {
+  customer_id String @id @default(uuid())
+  user_id     String @unique
+  payment_id  String
+
+  user    User     @relation(fields: [user_id], references: [id])
+  payment Payment  @relation(fields: [payment_id], references: [payment_id])
+  Orders  Orders[]
+}
+
+model Payment {
+  payment_id         String   @id @default(uuid())
+  payment_numbers    Int
+  payment_expiration DateTime
+  payment_CVV        Int
+
+  Customer Customer[]
+}
+
+model ServiceTypes {
+  service_type_id String      @id @default(uuid())
+  service_name    String
+  promotion       Promotions?
+}
+
+model ServiceImages {
+  service_image_id  String @id @default(uuid())
+  service_image_url String
+  service_id        String
+
+  service Service @relation(fields: [service_id], references: [service_id])
+}
+
+model Promotions {
+  promotion_id          String       @id @default(uuid())
+  promotion_percent     Int
+  promotion_description String
+  service_type_id       String       @unique
+  serviceType           ServiceTypes @relation(fields: [service_type_id], references: [service_type_id])
+}
+
+model Menu {
+  menu_id    String    @id @default(uuid())
+  menu_item  String
+  menu_price String
+  Service    Service[]
 }
