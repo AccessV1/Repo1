@@ -27,7 +27,11 @@ export class Services {
     });
     return service;
   }
-
+  /**
+   * Search for services .
+   * @param query  - Search query
+   * @returns Services that match the search query
+   */
   static async search(query: string) {
     const service = await db.service.findMany({
       where:{
@@ -51,5 +55,7 @@ export class Services {
     return service
   }
 
-  // future methods:update, delete, list all services @Brandon Ramos
+  // future methods:update, delete, search, list all services @Brandon Ramos 
+
+
 }
