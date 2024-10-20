@@ -32,7 +32,7 @@ export class Services {
    * @param query  - Search query
    * @returns Services that match the search query
    */
-  static async search(query: string) {
+  static async search(query: string) : Promise<Service[] | null> {
     const service = await db.service.findMany({
       where:{
         OR:[
