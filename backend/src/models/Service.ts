@@ -27,6 +27,35 @@ export class Services {
     });
     return service;
   }
+  /**
+   * Search for services .
+   * @param query  - Search query
+   * @returns Services that match the search query
+   */
+  static async search(query: string) : Promise<Service[] | null> {
+    const service = await db.service.findMany({
+      where:{
+        OR:[
+          {
+            service_name: {
+              contains: query,
+              mode: 'insensitive'
+            }
+          },
+          {
+            service_description: {
+              contains: query,
+              mode: 'insensitive'
+            }
+          }
+        ]
+      }
+    })
 
-  // future methods:update, delete, list all services @Brandon Ramos
+    return service
+  }
+
+  // future methods:update, delete, search, list all services @Brandon Ramos 
+
+
 }
