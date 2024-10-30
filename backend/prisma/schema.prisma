@@ -8,20 +8,21 @@ datasource db {
 }
 
 model User {
-  id             String         @id @default(uuid())
-  email          String         @unique
-  username       String         @unique
-  createdAt      DateTime       @default(now())
-  profilePicture String
-  password       String?
-  phoneNumber    String?        @unique
-  firstName      String
-  lastName       String
-  RefreshToken   RefreshToken[]
-  Comment        Comment[]
-  CommentLikes   CommentLikes[]
+  id              String           @id @default(uuid())
+  email           String           @unique
+  username        String           @unique
+  createdAt       DateTime         @default(now())
+  profilePicture  String
+  password        String?
+  phoneNumber     String?          @unique
+  firstName       String
+  lastName        String
+  RefreshToken    RefreshToken[]
+  Comment         Comment[]
+  CommentLikes    CommentLikes[]
   ServiceProvider ServiceProvider?
-  PostLike       PostLike[]
+  PostLike        PostLike[]
+  Customer        Customer?
 }
 
 model RefreshToken {
@@ -47,7 +48,7 @@ model Service {
   menu_id              String
 
   serviceImages ServiceImages[]
-  menu Menu @relation((fields: [menu_id], references: [menu_id]))
+  menu          Menu            @relation(fields: [menu_id], references: [menu_id])
 }
 
 model ServiceProvider {
@@ -130,7 +131,7 @@ model ServiceImages {
   service_image_url String
   service_id        String
 
-  service Service @relation(fields: [service_id], references: [service_id])
+  service Service @relation(fields: [service_id], references: [id])
 }
 
 model Promotions {
