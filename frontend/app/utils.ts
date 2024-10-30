@@ -68,3 +68,13 @@ export const getNeighborhood = async (location: LocationObject | null): Promise<
 
   return 'Unknown Neighborhood';
 };
+
+
+// animation for splash menu
+export const fadeTransition = {
+  cardStyleInterpolator: ({ current } : any) => ({
+    cardStyle: {
+      opacity: current.progress, // Fade based on progress
+    },
+  }),
+};

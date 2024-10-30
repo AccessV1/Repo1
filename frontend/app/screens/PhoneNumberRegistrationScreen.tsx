@@ -45,8 +45,8 @@ export const PhoneNumberLoginAndRegistrationScreen = () => {
       <View className="items-center">
         <View className=" h-full pt-[15vh]">
           <View className="mb-8 flex-col items-start gap-1">
-            <Text className="text-4xl font-semibold text-colors-primary">Get</Text>
-            <Text className="text-4xl font-semibold text-black">Started</Text>
+            <Text className="text-4xl font-semibold text-colors-primary">Get Started</Text>
+          
           </View>
           <View>
             <PhoneNumberInput phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} />
