@@ -26,7 +26,7 @@ export const LoginWithEmailOrUsernameScreen = () => {
     <View className="m-auto h-full w-[80vw] flex-1 gap-1  pt-[50] ">
       <Image
         className="mx-auto h-[218] w-[218]"
-        source={require('../assets/images/openlogo1.png')}
+        source={require('../assets/images/divno_logo.png')}
         resizeMode="contain"
       />
 

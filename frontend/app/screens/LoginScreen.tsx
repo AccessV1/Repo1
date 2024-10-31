@@ -75,7 +75,7 @@ function LoginScreen() {
         <Image
           style={{ width: 218, height: height * 0.2 }}
           className="mx-auto mb-10 h-[218] w-[218]"
-          source={require('../assets/images/openlogo1.png')}
+          source={require('../assets/images/divno_logo.png')}
           resizeMode="contain"
         />
 

@@ -7,8 +7,11 @@ import React from 'react';
 import { LoginWithEmailOrUsernameScreen } from 'app/screens/LoginWithEmailOrUsernameScreen';
 import { PhoneNumberLoginAndRegistrationScreen } from 'app/screens/PhoneNumberRegistrationScreen';
 import { AdditionalRegistrationInfoScreen } from 'app/screens/AdditionalRegistrationInfoScreen';
+import { SplashScreen } from 'app/components/layout/SplashScreen';
+import { fadeTransition } from 'app/utils';
 
 export type AuthStackParamList = {
+  splash: undefined;
   login: undefined;
   verifyPhoneNumber: undefined;
   loginWithEmailOrUsername: undefined;
@@ -37,21 +40,25 @@ const authScreens: AuthScreen[] = [
 export const AuthStack = () => {
   return (
     <Stack.Navigator
-      initialRouteName="login"
+      initialRouteName="splash"
       screenOptions={{
-        headerTitle: '',
-        headerStyle: {
-          backgroundColor: 'white',
-          elevation: 0,
-          shadowOpacity: 0,
-        },
+        headerShown: false,
+        ...fadeTransition,
       }}>
+      <Stack.Screen
+        name="splash"
+        options={{ headerShown: false }}
+        children={(props: any) => <SplashScreen {...props} route="login" />} // Redirect to 'login'
+      />
       {authScreens.map((screen: AuthScreen) => (
         <Stack.Screen
           options={{
             headerBackTitleVisible: false,
             headerBackImage: () => (
-              <Image className="ml-5" source={require('../assets/images/backArrow.png')} />
+              <Image
+                className="ml-5 h-[20] w-[24]"
+                source={require('../assets/images/backArrow.png')}
+              />
             ),
           }}
           key={screen.name}
