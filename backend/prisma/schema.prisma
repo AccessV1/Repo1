@@ -38,61 +38,60 @@ model Service {
   id                   String   @id @default(uuid())
   service_name         String
   location_id          String
-  service_description  String
+description  String
   service_type_id      String
   service_price        String
-  service_availibility DateTime
-  service_license      String
-  service_images       String
+availibility DateTime
+license      String
+images       String
   provider_id          String
   menu_id              String
 
-  serviceImages ServiceImages[]
+Images ServiceImages[]
   menu          Menu            @relation(fields: [menu_id], references: [menu_id])
 }
 
 model ServiceProvider {
-  provider_id      String @id @default(uuid())
+id      String @id @default(uuid())
   user_id          String @unique
-  provider_name    String
-  provider_email   String
-  provider_contact String
-  provider_rating  Int
-  location_id      String
-
+ name    String
+ email   String
+contact String
+rating  Int
+location_id      String
   user     User     @relation(fields: [user_id], references: [id])
-  location Location @relation(fields: [location_id], references: [location_id])
+  location Location @relation(fields: [location_id], references: [id])
 }
 
 model Location {
-  location_id      String @id @default(uuid())
-  location_address String
-  location_city    String
-  location_zip     Int
-  location_country String
-  location_state   String
+  id      String @id @default(uuid())
+  address String
+city    String
+zip     Int
+ country String
+state   String
 
   ServiceProvider ServiceProvider[]
   Orders          Orders[]
 }
 
 model Orders {
-  order_id          String @id @default(uuid())
-  order_description String
-  order_price       String
-  order_list        String
-  order_status      String
+id          String @id @default(uuid())
+description String
+price       String
+ list        String
+status      String
   location_id       String
   customer_id       String
 
-  location Location @relation(fields: [location_id], references: [location_id])
+  location Location @relation(fields: [location_id], references: [id])
   customer Customer @relation(fields: [customer_id], references: [customer_id])
 }
 
 model Post {
   id           String     @id @default(uuid())
-  post_content String
-  post_time    DateTime
+content String
+  creation_date    DateTime
   user_id      String
   post_status  String
   caption      String?
@@ -107,39 +106,38 @@ model Customer {
   payment_id  String
 
   user    User     @relation(fields: [user_id], references: [id])
-  payment Payment  @relation(fields: [payment_id], references: [payment_id])
+  payment Payment  @relation(fields: [payment_id], references: [id])
   Orders  Orders[]
 }
 
 model Payment {
-  payment_id         String   @id @default(uuid())
-  payment_numbers    Int
-  payment_expiration DateTime
-  payment_CVV        Int
-
+id         String   @id @default(uuid())
+numbers    Int
+expiration DateTime
+CVV        Int
   Customer Customer[]
 }
 
 model ServiceTypes {
-  service_type_id String      @id @default(uuid())
+  id String      @id @default(uuid())
   service_name    String
   promotion       Promotions?
 }
 
 model ServiceImages {
-  service_image_id  String @id @default(uuid())
-  service_image_url String
+id  String @id @default(uuid())
+image_url String
   service_id        String
 
   service Service @relation(fields: [service_id], references: [id])
 }
 
 model Promotions {
-  promotion_id          String       @id @default(uuid())
-  promotion_percent     Int
-  promotion_description String
+id          String       @id @default(uuid())
+percent     Int
+description String
   service_type_id       String       @unique
-  serviceType           ServiceTypes @relation(fields: [service_type_id], references: [service_type_id])
+  serviceType           ServiceTypes @relation(fields: [service_type_id], references: [id])
 }
 
 model Menu {
@@ -167,7 +165,6 @@ model CommentLikes {
   id         String @id @default(uuid())
   comment_id String
   user_id    String
-
   comment Comment @relation(fields: [comment_id], references: [id])
   user    User    @relation(fields: [user_id], references: [id])
 }
