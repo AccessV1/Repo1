@@ -58,7 +58,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
           onPress={onSubmit}
           className="flex-row items-center rounded border-2 border-black bg-white px-4 py-3"
           style={{ flexGrow: 1, justifyContent: 'center' }}>
-          <Text className="mr-2 text-black" style={{ fontSize: 20 }}>
+          <Text className="mr-2 text-black" style={{ fontSize: 18 }}>
             Submit
           </Text>
         </TouchableOpacity>

@@ -5,8 +5,10 @@ import { useForm, FormProvider } from 'react-hook-form';
 import Header from '../components/ui/ServiceForm/Header';
 import ProgressBar from '../components/ui/ServiceForm/ProgressBar';
 import NavigationButtons from '../components/ui/ServiceForm/NavigationButtons';
+import Label from 'app/components/ui/Label';
+import ImageUploadBox from 'app/components/ui/ImageUploadBox';
 
-const ServiceFormScreen: React.FC = ({ navigation }) => {
+const ServiceFormScreen: React.FC = ({ navigation, category = "Meal"}) => {
   // const { isEdit, serviceId } = route.params;
   const isEdit = false;
   const methods = useForm({ defaultValues: { name: '', description: '', price: '' } });
@@ -30,6 +32,8 @@ const ServiceFormScreen: React.FC = ({ navigation }) => {
           onBackPress={() => navigation.goBack()}
         />
         <ProgressBar currentStep={step} totalSteps={4} />
+        <Label title={`About ${category}`}/>
+        <ImageUploadBox/>
         <NavigationButtons
           step={step}
           totalSteps={4}
