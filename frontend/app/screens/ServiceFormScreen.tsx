@@ -1,15 +1,12 @@
-// screens/ServiceFormScreen.tsx
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { useForm, FormProvider } from 'react-hook-form';
 import Header from '../components/ui/ServiceForm/Header';
 import ProgressBar from '../components/ui/ServiceForm/ProgressBar';
 import NavigationButtons from '../components/ui/ServiceForm/NavigationButtons';
-import Label from 'app/components/ui/Label';
-import ImageUploadBox from 'app/components/ui/ImageUploadBox';
+import MealServiceForm from './service/MealServiceForm';
 
-const ServiceFormScreen: React.FC = ({ navigation, category = "Meal"}) => {
-  // const { isEdit, serviceId } = route.params;
+const ServiceFormScreen: React.FC = ({ navigation, category = 'meal' }) => {
   const isEdit = false;
   const methods = useForm({ defaultValues: { name: '', description: '', price: '' } });
   const [step, setStep] = useState(1);
@@ -18,30 +15,34 @@ const ServiceFormScreen: React.FC = ({ navigation, category = "Meal"}) => {
   const onPrevious = () => setStep((prev) => Math.max(prev - 1, 1));
   const onSubmit = methods.handleSubmit((data) => {
     if (isEdit) {
-      // Update service logic
     } else {
-      // Create service logic
     }
   });
 
   return (
     <FormProvider {...methods}>
-      <View style={{ flex: 1, padding: 16 }}>
+      <View className="flex-1 px-2 pt-8">
         <Header
           title={isEdit ? 'Edit Service' : 'Add a Service'}
           onBackPress={() => navigation.goBack()}
         />
         <ProgressBar currentStep={step} totalSteps={4} />
-        <Label title={`About ${category}`}/>
-        <ImageUploadBox/>
-        <NavigationButtons
-          step={step}
-          totalSteps={4}
-          onPrevious={onPrevious}
-          onNext={onNext}
-          onSubmit={onSubmit}
-          canProceed
-        />
+        <ScrollView
+          contentContainerStyle={{ padding: 16, flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <MealServiceForm steps={step} />
+        </ScrollView>
+        <View className="px-6">
+          <NavigationButtons
+            step={step}
+            totalSteps={4}
+            onPrevious={onPrevious}
+            onNext={onNext}
+            onSubmit={onSubmit}
+            canProceed
+          />
+        </View>
       </View>
     </FormProvider>
   );
