@@ -49,13 +49,27 @@ const FormBox: React.FC<FormBoxProps> = ({
 
   const handleTimeChange = (input: string) => {
     const numericInput = input.replace(/[^0-9]/g, '');
+
     if (numericInput.length > 4) return;
 
+    let formattedTime = '';
     if (numericInput.length <= 2) {
-      setTime(numericInput);
+      const hours = parseInt(numericInput, 10);
+      if (hours >= 1 && hours <= 12) {
+        formattedTime = hours.toString().padStart(2, '0');
+      }
     } else {
-      setTime(`${numericInput.slice(0, 2)}:${numericInput.slice(2)}`);
+      const hours = parseInt(numericInput.slice(0, 2), 10);
+      const minutes = parseInt(numericInput.slice(2), 10);
+
+      if (hours >= 1 && hours <= 12 && minutes >= 0 && minutes < 60) {
+        formattedTime = `${hours.toString().padStart(2, '0')}:${minutes
+          .toString()
+          .padStart(2, '0')}`;
+      }
     }
+
+    setTime(formattedTime);
   };
 
   const toggleAMPM = () => {
