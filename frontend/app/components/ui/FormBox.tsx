@@ -48,28 +48,31 @@ const FormBox: React.FC<FormBoxProps> = ({
   const [isAM, setIsAM] = useState(true);
 
   const handleTimeChange = (input: string) => {
-    const numericInput = input.replace(/[^0-9]/g, '');
+    const numericInput = input.replace(/[^0-9]/g, ''); // Allow only numeric characters
+    setTime(numericInput); // Store raw input for flexibility
+  };
 
-    if (numericInput.length > 4) return;
+  const validateAndFormatTime = (rawTime: string) => {
+    if (rawTime.length === 0) return ''; // Empty input is allowed
+    if (rawTime.length <= 2) {
+      // Handle hours only
+      const hours = parseInt(rawTime, 10);
+      if (hours < 1 || hours > 12) return ''; // Invalid hours
+      return hours.toString().padStart(2, '0');
+    } else if (rawTime.length <= 4) {
+      // Handle hours and minutes
+      const hours = parseInt(rawTime.slice(0, 2), 10);
+      const minutes = parseInt(rawTime.slice(2), 10);
 
-    let formattedTime = '';
-    if (numericInput.length <= 2) {
-      const hours = parseInt(numericInput, 10);
-      if (hours >= 1 && hours <= 12) {
-        formattedTime = hours.toString().padStart(2, '0');
-      }
-    } else {
-      const hours = parseInt(numericInput.slice(0, 2), 10);
-      const minutes = parseInt(numericInput.slice(2), 10);
-
-      if (hours >= 1 && hours <= 12 && minutes >= 0 && minutes < 60) {
-        formattedTime = `${hours.toString().padStart(2, '0')}:${minutes
-          .toString()
-          .padStart(2, '0')}`;
-      }
+      if (hours < 1 || hours > 12 || minutes < 0 || minutes >= 60) return ''; // Invalid time
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     }
+    return ''; // Reject invalid lengths
+  };
 
-    setTime(formattedTime);
+  // Ensure the time is valid when the user finishes editing
+  const handleBlur = () => {
+    setTime((prev) => validateAndFormatTime(prev));
   };
 
   const toggleAMPM = () => {
@@ -128,6 +131,7 @@ const FormBox: React.FC<FormBoxProps> = ({
               keyboardType="numeric"
               value={time}
               onChangeText={handleTimeChange}
+              onBlur={handleBlur}
               placeholder="00:00"
               maxLength={5}
               style={{
