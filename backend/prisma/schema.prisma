@@ -1,3 +1,9 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,173 +13,933 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id              String           @id @default(uuid())
-  email           String           @unique
-  username        String           @unique
-  createdAt       DateTime         @default(now())
-  profilePicture  String
-  password        String?
-  phoneNumber     String?          @unique
-  firstName       String
-  lastName        String
-  RefreshToken    RefreshToken[]
-  Comment         Comment[]
-  CommentLikes    CommentLikes[]
-  ServiceProvider ServiceProvider?
-  PostLike        PostLike[]
-  Customer        Customer?
+enum User_roles {
+  ADMIN
+  USER
+  CONTRACT_EMPLOYEE
+  SERVICE_PROVIDER
 }
 
+model User {
+  id                String              @id @default(uuid())
+  email             String?              @unique
+  username          String              @unique
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  deletedAt         DateTime?
+  DOB               String              @default(dbgenerated("'2006-01-01T00:00:00.000Z'"))
+  provider          String?
+  password          Boolean              
+  phoneNumber       String?              @unique
+  firstName         String
+  lastName          String
+  service_id        String?             @unique // Service_id can be nullable if user does not opt to serve
+  worker_id         String?             @unique // Worker_id can be nullable if user does not opt
+  admin_id          String?             @unique // Worker_id can be nullable if user does not opt
+  // Need to fix policy Id stuff
+  policy_id         String?             @unique
+  payment_id        String?             @unique // payment_id is nullable until user inputs payment data
+  // Enum which has preset roles. Deafault role for every account is user
+  role              User_roles          @default(USER)
+  // in progress
+  RefreshToken      RefreshToken[]
+  // If a user is a service provider then they can also be identified by their user_id (One-To-One)
+  ServiceProvider   ServiceProvider?
+  // If a user is an employee then they can also be identified by their user_id (One-To-One)
+  Employee          Contract_Worker?
+  // Connects the many accepted terms of service to a user (One-To-Many) (Many meaning that they can accept many terms of services if any chnages are made in the service)
+  Terms_of_Services Terms_of_Services[]
+  // Connects a user to their device (One-To-Many)
+  User_Device       User_Device[]
+  // Work in progress
+  login_services    Login_services[]
+  // Connects a user to their profile (One-To-One)
+  Profile           Profile?
+  // Connects te accepted privacy polciy to every user (One-To-Many) (Many meaning that they can accept many privacy policies if any chnages are made in the service)
+  Privacy_Policy    Privacy_Policy?
+  // Connects a user to their many orders (One-to-Many)
+  Orders            UserOrdersHistory[]
+  // Connects a user to a payment method (One-To-One)
+  Payment           Payment?
+  // Connects a user to their many reviews (One-to-Many)
+  service_review    service_review[]
+  // Connects a user to many locations (One-to-Many)
+  User_Location     User_Location[]
+  // Connects many user to their many locations (Many-To-Many)
+  location          Location[]
+
+  // Many users can have many roles
+  roles roles[]
+
+  // Table used to check if user opted in to be a service provider
+  UserServiceOptIn UserServiceOptIn?
+
+  UserCart UserCart[]
+
+  Notification Notification[]
+
+  settings settings?
+
+  Admin Admin?
+
+  Login Login[]
+}
+
+model Login{
+  id        String   @id @default(uuid())
+  user_id   String
+  login_service String
+  loginTime DateTime @default(now())
+  logoutTime DateTime?
+
+  User User @relation(fields: [user_id], references: [id])
+  // Connects to user table (One-To-Many)
+}
+
+// Tbale to check if a user opted to be a service provider
+model UserServiceOptIn {
+  id         String   @id @default(uuid())
+  user_id    String   @unique
+  service_id String?  @unique
+  opted_in   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  User User @relation(fields: [user_id], references: [id])
+}
+
+// session expires when you don't login in time, or not active.
+// Generates a new token for a user to login
+// to be implemented
 model RefreshToken {
   id        String   @id @default(uuid())
   userId    String
   token     String   @unique
   createdAt DateTime @default(now())
   expiresAt DateTime
-  user      User     @relation(fields: [userId], references: [id])
+
+  // Connects to user table (One-To-Many)
+  user User @relation(fields: [userId], references: [id])
+}
+
+// idk if this is necessary
+// Google and Facebook login
+model Login_services {
+  id            String   @id @default(uuid())
+  user_id       String
+  service_id    String
+  login_service String
+  login_token   String
+  refresh_token String
+  used_at       DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id])
+  //refresh_token RefreshToken @relation(fields: [refresh_token], references: [id]
+}
+
+enum serviceType {
+  Home_Kitchen
+  Restaurant
+  Driver
+}
+
+enum serviceType2 {
+  Home_Kitchen
+  Driver
+}
+
+model roles {
+  id               String       @id @default(uuid())
+  // A user can be both a contract_employee and a service provider
+  role1            User_roles?  @unique
+  role2            User_roles?  @unique
+  user_id          String       @unique
+  // A user be identified as two types only either a driver or homekitchen
+  permission_tyoe1 serviceType? @unique
+  permission_tyoe2 serviceType? @unique
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  deletedAt        DateTime?
+
+  User User[]
 }
 
 model Service {
-  id                   String   @id @default(uuid())
-  service_name         String
-  location_id          String
-description  String
-  service_type_id      String
-  service_price        String
-availibility DateTime
-license      String
-images       String
-  provider_id          String
-  menu_id              String
+  id               String              @id @default(uuid())
+  service_name     String
+  location_id      String              @unique
+  worker_id        String?             @unique
+  description      String
+  provider_id      String              @unique
+  serving_hours    String
+  files            String
+  // Refrences preset roles
+  service_type     serviceType
+  // Connects a service with many service reviews (One-To-Many)
+  service_review   service_review[]
+  // Connects a service with a service Provider (One-To-One)
+  ServiceProvider  ServiceProvider?
+  // Connects a service with many files (One-To-Many)
+  UserFiles        UserFiles[]
+  // Connects a service with a HomeKitchen service (One-To-One)
+  HomeKitchen      HomeKitchen?
+  // Connects a service with a restaurante service (One-To-One)
+  Restaurante      Restaurante?
+  // Connects a service with a location
+  Service_Location Service_Location?
+  // Connects a service with many orders
+  Orders           UserOrdersHistory[]
+  // Connects a service with a contract_worker
+  Contract_Worker  Contract_Worker?
 
-Images ServiceImages[]
-  menu          Menu            @relation(fields: [menu_id], references: [menu_id])
+  Promotions Promotions[]
+
+  CartItem CartItem[]
+
+  Uploaded_picture Uploaded_picture[]
+}
+
+model service_review {
+  id         String   @id @default(uuid())
+  service_id String
+  user_id    String
+  rating     Int
+  review     String
+  created_at DateTime @default(now())
+
+  service Service @relation(fields: [service_id], references: [id])
+  User    User    @relation(fields: [user_id], references: [id])
+}
+
+model Uploaded_picture {
+  id          String      @id @default(uuid())
+  user_id     String
+  service_id  String
+  type        PictureType
+  picture_url String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now())
+
+  // Connects to user/service table so that a profile picture can be connected with each account (One-To-Many)
+  Profile Profile @relation(fields: [user_id], references: [id])
+  Service Service @relation(fields: [service_id], references: [id])
+}
+
+enum PictureType {
+  ProfilePicture
+  PostPicture
+}
+
+// IMPORTANT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+// TO GET TO THE FILE YOU WANT YOU HAVE TO GO THROUGH SERVICES. LETS SAY YOU WANT THE CERTIFICATE OF REGISTARTION FOR WHATEVER SEERVICE.
+// YOU QUERY THE SERVICES TABLE AND JOIN HOMEKITCHEN AND USERFILES. THEN WHATEVER THE FILETYPE IS TO FIND THE FILE
+
+model HomeKitchen {
+  id            String        @id @default(uuid())
+  service_id    String        @unique
+  requiredFiles RequiredFiles
+
+  // Connnects a homekitchen to a service (One-To-One)
+  HomeKitchen  Service            @relation(fields: [service_id], references: [id])
+  // Connects many items sold to a homekitchen (One-To-Many)
+  Service_Sell HomeService_Sell[]
+}
+
+enum RequiredFiles {
+  Certificate_of_Registration
+}
+
+model Restaurante {
+  id             String         @id @default(uuid())
+  service_id     String         @unique
+  requiredFiles  RequiredFiles2
+  signedContract Boolean
+  menu_id        String
+
+  // Connects a resturante to a service (One-To-One)
+  Restaurante        Service             @relation(fields: [service_id], references: [id])
+  // Connects a restaurant to a contract (One-To-One)
+  RestaurantContract RestaurantContract?
+  // Connects a restauarante to many menu catagories (One-To-Many)
+  MenuCatagory       MenuCatagory[]
+}
+
+enum RequiredFiles2 {
+  Food_Handlers_Certificate
+  OwnersGov_ID
+}
+
+model RestaurantContract {
+  id                String   @id @default(uuid())
+  service_id        String   @unique
+  contract_contents String
+  signed            Boolean  @default(false)
+  DateSigned        DateTime @default(now())
+
+  // Connects a restuatrent to a contract (One-To-One)
+  contract Restaurante @relation(fields: [id], references: [id])
+}
+
+model UserFiles {
+  id           String    @id @default(uuid())
+  Service_id   String
+  FileTypes    FileTypes
+  fileName     String
+  fileURL      String
+  DateUploaded DateTime  @default(now())
+  DateModified DateTime  @default(now())
+  deletedAt    DateTime  @default(now())
+
+  // Connects a service to the many files they've uploaded (Documents) (One-To-Many)
+  Service Service @relation(fields: [Service_id], references: [id])
+}
+
+enum FileTypes {
+  Certificate_of_Registartion
+  Food_Handlers_Certificate
+  OwnersGov_ID
+  DriverLicense
+  Other
 }
 
 model ServiceProvider {
-id      String @id @default(uuid())
-  user_id          String @unique
- name    String
- email   String
-contact String
-rating  Int
-location_id      String
-  user     User     @relation(fields: [user_id], references: [id])
-  location Location @relation(fields: [location_id], references: [id])
+  id                        String  @id @default(uuid())
+  service_id                String  @unique
+  user_id                   String  @unique
+  name                      String
+  email                     String
+  contact                   String
+  location_id               String
+  number_same_as_restaurant Boolean
+
+  // Connects a service provider to a user (One-To-One)
+  user            User             @relation(fields: [user_id], references: [id])
+  // Connects a service with a service provider (One-To-One)
+  service         Service          @relation(fields: [service_id], references: [provider_id])
+  // Connects a service provider with a payment (How they get paid) (One-To-One)
+  Service_Payment Service_Payment?
+}
+
+model Service_Location {
+  id                   String @id @default(uuid())
+  address              String
+  city                 String
+  zip                  Int
+  country              String
+  state                String
+  floor_number         Int
+  shop_building_number Int
+
+  // Connects a service to a location (One-To-One)
+  Service Service @relation(fields: [id], references: [location_id])
+}
+
+model HomeService_Sell {
+  id                  String   @id @default(uuid())
+  service_id          String
+  meal_image          String
+  title               String
+  price               String
+  quantity            Int
+  additional_items    String
+  allow_customization Boolean
+  Orders              String
+  schedule_id         String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @default(now())
+  deletedAt           DateTime @default(now())
+
+  // Connects a service to the many items sold to a homekitchen (One-To-Many)
+  sell          HomeKitchen                @relation(fields: [service_id], references: [id])
+  // Connects many sold items to a schedule (One-To-Many)
+  Sell_Schedule HomeServiceSell_Schedule[]
+
+  UserOrdersHistory UserOrdersHistory[]
+}
+
+model HomeServiceSell_Schedule {
+  id                   String   @id @default(uuid())
+  service_id           String
+  schedule_date_Update DateTime @default(now())
+  days                 days
+  CreatedAt            DateTime @default(now())
+  UpdatedAt            DateTime @default(now())
+
+  // Connects many sold items to a schedule (One-To-Many)
+  Service HomeService_Sell @relation(fields: [service_id], references: [id])
+}
+
+enum days {
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
+}
+
+// need to connect to services
+model Promotions {
+  id              String @id @default(uuid())
+  service_id      String
+  percent         Int
+  description     String
+  service_type_id String @unique
+
+  Service Service @relation(fields: [service_id], references: [id])
+}
+
+model MenuCatagory {
+  menu_id       String   @id @default(uuid())
+  catagory_name String
+  servingHours  String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now())
+  service_id    String
+
+  Menu Restaurante @relation(fields: [service_id], references: [id])
+
+  MenuItems MenuItems[]
+}
+
+model MenuItems {
+  id                   String    @id @default(uuid())
+  menu_id              String
+  item_name            String
+  description          String
+  foodType             foodType
+  price                String
+  images               String
+  additionalOptions_id String    @unique
+  createdAt            DateTime  @default(now())
+  UpdatedAt            DateTime  @default(now())
+  deletedAt            DateTime?
+
+  MenuCatagory MenuCatagory @relation(fields: [menu_id], references: [menu_id])
+
+  AdditionsToMeal AdditionsToMeal[]
+
+  UserOrdersHistory UserOrdersHistory[]
+}
+
+model AdditionsToMeal {
+  id                       String    @id @default(uuid())
+  item_name                String
+  additional_menu_items_id String
+  createdAt                DateTime  @default(now())
+  UpdatedAt                DateTime  @default(now())
+  deletedAt                DateTime?
+
+  MenuItems MenuItems @relation(fields: [additional_menu_items_id], references: [id])
+}
+
+enum foodType {
+  Non_Veg
+  Vegan
+  Vegitarian
+  Egg
 }
 
 model Location {
   id      String @id @default(uuid())
+  user_id String
   address String
-city    String
-zip     Int
- country String
-state   String
+  city    String
+  zip     Int
+  country String
+  state   String
 
-  ServiceProvider ServiceProvider[]
-  Orders          Orders[]
+  // Connects many users to many locations. Allows many users to share the same location (Many-To-Many)
+  User          User[]
+  // Connects a user location to many locations. This allows for the relation above. (One-To-Many)
+  User_Location User_Location[]
 }
 
-model Orders {
-id          String @id @default(uuid())
-description String
-price       String
- list        String
-status      String
-  location_id       String
-  customer_id       String
+model User_Location {
+  id          String @id @default(uuid())
+  user_id     String
+  location_id String
 
+  // connects a user to many locations (one-to-many) 
+  User     User     @relation(fields: [user_id], references: [id])
+  // Connects a location to many users locations (one-to-many)
   location Location @relation(fields: [location_id], references: [id])
-  customer Customer @relation(fields: [customer_id], references: [customer_id])
 }
 
-model Post {
-  id           String     @id @default(uuid())
-content String
-  creation_date    DateTime
-  user_id      String
-  post_status  String
-  caption      String?
-  post_privacy String
-  Comment      Comment[]
-  PostLike     PostLike[]
+enum Order_status {
+  Track
+  Preparing_Order
+  Order_Recived
+  Cancelled
+  Out_For_Delivery
 }
 
-model Customer {
-  customer_id String @id @default(uuid())
-  user_id     String @unique
-  payment_id  String
+model UserOrdersHistory {
+  id               String        @id @default(uuid())
+  amount           Int
+  status           Order_status?
+  location_id      String
+  buyer_id         String
+  seller_id        String
+  menu_item        String?
+  HomeKitchenOrder String?
+  date_created     DateTime?     @default(now())
+  date_recived     DateTime?     @default(now())
+  date_cancelled   DateTime?     @default(now())
+  date_shipped     DateTime?     @default(now())
 
-  user    User     @relation(fields: [user_id], references: [id])
-  payment Payment  @relation(fields: [payment_id], references: [id])
-  Orders  Orders[]
+  // Location of order can be found by using a query on service and user as location is refrenced
+
+  // Connects a service with many orders (One-to-many) 
+  Service   Service    @relation(fields: [seller_id], references: [id])
+  // Connects a user with many orders (One-to-many)
+  User      User       @relation(fields: [buyer_id], references: [id])
+  // Not correct needs to be optional
+  MenuItems MenuItems? @relation(fields: [menu_item], references: [id])
+
+  HomeService_Sell HomeService_Sell? @relation(fields: [HomeKitchenOrder], references: [id])
+}
+
+model UserCart {
+  id             String   @id @default(uuid())
+  user_id        String
+  payment_method String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user      User       @relation(fields: [user_id], references: [id])
+  cartItems CartItem[]
+}
+
+model CartItem {
+  id          String   @id @default(uuid())
+  cart_id     String
+  serviceId   String
+  Service_tip String?
+  quantity    Int
+  price       Float // Snapshot of the price at the time it was added
+  createdAt   DateTime @default(now())
+
+  cart    UserCart @relation(fields: [cart_id], references: [id])
+  service Service  @relation(fields: [serviceId], references: [id])
+}
+
+model user_bank_info {
+  id              String    @id @default(uuid())
+  user_id         String
+  payment_id      String
+  holders_name    String
+  bank_name       String
+  account_number  String
+  routing_number  String
+  primary_account Boolean   @default(true)
+  created_at      DateTime  @default(now())
+  removed_at      DateTime?
+
+  settings settings @relation(fields: [payment_id], references: [id])
 }
 
 model Payment {
-id         String   @id @default(uuid())
-numbers    Int
-expiration DateTime
-CVV        Int
-  Customer Customer[]
+  id           String          @id @default(uuid())
+  type_payment PaymentProvider
+  Card_numbers String?
+  expiration   DateTime?
+  payment_type String?
+  bank_id      String
+
+  User User @relation(fields: [id], references: [payment_id])
+
+  //Bank_type Bank_type[]
 }
 
-model ServiceTypes {
-  id String      @id @default(uuid())
-  service_name    String
-  promotion       Promotions?
+enum PaymentProvider {
+  APPLE_PAY
+  GOOGLE_PAY
+  PAYPAL
+  CASH_APP
+  CREDIT_CARD
+  DEBIT_CARD
 }
 
-model ServiceImages {
-id  String @id @default(uuid())
-image_url String
-  service_id        String
+model Bank_type {
+  id           String @id @default(uuid())
+  account_type String
+  bank_name    String
 
-  service Service @relation(fields: [service_id], references: [id])
+  //Payment Payment @relation(fields: [id], references: [bank_id])
 }
 
-model Promotions {
-id          String       @id @default(uuid())
-percent     Int
-description String
-  service_type_id       String       @unique
-  serviceType           ServiceTypes @relation(fields: [service_type_id], references: [id])
+model Terms_of_Services {
+  id                       String   @id @default(uuid())
+  terms_of_service_content String
+  created_at               DateTime @default(now())
+  updated_at               DateTime @default(now())
+  accepted                 Boolean
+
+  service User @relation(fields: [id], references: [service_id])
+
+  settings settings?
 }
 
-model Menu {
-  menu_id    String    @id @default(uuid())
-  menu_item  String
-  menu_price String
-  Service    Service[]
+model Privacy_Policy {
+  id                     String   @id @default(uuid())
+  privacy_Policy_id      String
+  Privacy_Policy_content String
+  created_at             DateTime @default(now())
+  updated_at             DateTime @default(now())
+  accepted               Boolean
+
+  policy User @relation(fields: [id], references: [policy_id])
+}
+
+model User_Device {
+  id          String   @id @default(uuid())
+  user_id     String   @unique
+  device_type String
+  device_name String
+  created_at  DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id])
+}
+
+model Contract_Worker {
+  id                        String   @id @default(uuid())
+  user_id                   String   @unique
+  photo                     String
+  hire_date                 DateTime @default(now())
+  phoneNumber               String
+  vehicleID                 String
+  Contract_Worker_Paymentid String?  @unique
+
+  user    User    @relation(fields: [user_id], references: [worker_id])
+  Service Service @relation(fields: [id], references: [worker_id])
+
+  Vehicles                Vehicles?
+  Contract_Worker_Payment Contract_Worker_Payment?
+}
+
+// Required vehicle information
+model Vehicles {
+  id                        String      @id @default(uuid())
+  employee_id               String      @unique
+  vehicle_type              vehicleType
+  vehicle_photo             String
+  work_hours                String
+  work_area                 String
+  vehicle_registration_date DateTime    @default(now())
+  vehicleModel              String
+  registartion_number       String
+
+  Contract_Worker Contract_Worker @relation(fields: [id], references: [id])
+}
+
+// vehicle types
+enum vehicleType {
+  Car
+  Motorcycle
+  Bike
+}
+
+// Table that stores user payment info
+model Contract_Worker_Payment {
+  id            String   @id @default(uuid())
+  employee_id   String
+  AccountHolder String
+  BankName      String
+  RoutingNumber String
+  AccountNumber String
+  amount        String
+  payment_date  DateTime @default(now())
+
+  Contract_Worker Contract_Worker @relation(fields: [id], references: [Contract_Worker_Paymentid])
+}
+
+model Profile {
+  id         String @id @default(uuid())
+  user_id    String @unique
+  service_id String @unique
+  bio        String
+  views      Int
+  follower   Int    @unique
+  following  Int    @unique
+
+  user User @relation(fields: [user_id], references: [id])
+
+  // maybe many to many instead
+
+  messege_reciver messege[] @relation("reciver_relation")
+  messege_sender  messege[] @relation("sender_relation")
+
+  Post             Post[]
+  Followers        Followers[]
+  Comment          Comment[]          @relation("User_Who_Commented")
+  CommentLikes     CommentLikes[]     @relation("User_Who_Comment_liked")
+  PostLike         PostLike[]         @relation("User_Who_Liked")
+  Uploaded_picture Uploaded_picture[]
+
+  Views Views[]
+
+  settings settings?
+}
+
+model Followers {
+  id           String @id @default(uuid())
+  follower_id  String
+  following_id String
+
+  Profile Profile[]
+}
+
+model messege {
+  id               String      @id @default(uuid())
+  User_sender_id   String
+  User_receiver_id String
+  message_content  String
+  type             MessageType
+  groupID          String
+  createdAt        DateTime    @default(now())
+  deletedAt        DateTime?
+
+  sender  Profile @relation("sender_relation", fields: [User_sender_id], references: [id])
+  reciver Profile @relation("reciver_relation", fields: [User_receiver_id], references: [id])
+
+  messageAttachment messageAttachment[]
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  AUDIO
+}
+
+model messageAttachment {
+  id             String         @id @default(uuid())
+  message_id     String
+  type           AttachmentType
+  attachment_url String
+  createdAt      DateTime       @default(now())
+
+  messege messege @relation(fields: [message_id], references: [id])
+}
+
+enum AttachmentType {
+  IMAGE
+  AUDIO
+  VIDEO
+  SHARED_USER_PROFILE
+}
+
+model Post {
+  id            String    @id @default(uuid())
+  posts_id      String
+  content       String
+  creation_date DateTime  @default(now())
+  post_status   String
+  caption       String?
+  post_privacy  String
+  created_date  DateTime  @default(now())
+  updated_date  DateTime  @updatedAt
+  deleted_date  DateTime?
+
+  Profile  Profile    @relation(fields: [posts_id], references: [id])
+  Comment  Comment[]
+  PostLike PostLike[]
+
+  Views Views[]
 }
 
 model Comment {
-  id           String @id @default(uuid())
+  id           String    @id @default(uuid())
   post_id      String
   post_content String
-  user_id      String
   post_status  String
   caption      String
   post_privacy String
+  profile_id   String
+  created_date DateTime  @default(now())
+  updated_date DateTime  @updatedAt
+  deleted_date DateTime?
 
+  Profile      Profile        @relation("User_Who_Commented", fields: [profile_id], references: [id])
   post         Post           @relation(fields: [post_id], references: [id])
-  user         User           @relation(fields: [user_id], references: [id])
   CommentLikes CommentLikes[]
 }
 
 model CommentLikes {
-  id         String @id @default(uuid())
-  comment_id String
-  user_id    String
+  id          String    @id @default(uuid())
+  comment_id  String
+  profile_id  String
+  like_date   DateTime  @default(now())
+  unlike_date DateTime?
+
+  Profile Profile @relation("User_Who_Comment_liked", fields: [profile_id], references: [id])
   comment Comment @relation(fields: [comment_id], references: [id])
-  user    User    @relation(fields: [user_id], references: [id])
 }
 
 model PostLike {
-  id      String @id @default(uuid())
-  post_id String
-  user_id String
+  id          String    @id @default(uuid())
+  post_id     String
+  profile_id  String
+  like_date   DateTime  @default(now())
+  unlike_date DateTime?
+
+  Profile Profile @relation("User_Who_Liked", fields: [profile_id], references: [id])
+  post    Post    @relation(fields: [post_id], references: [id])
+}
+
+model Views {
+  id         String   @id @default(uuid())
+  post_id    String
+  profile_id String
+  view_date  DateTime @default(now())
+
+  Profile Profile @relation(fields: [profile_id], references: [id])
+  post    Post    @relation(fields: [post_id], references: [id])
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  user_id   String
+  type      NotificationType
+  title     String
+  body      String?
+  link      String?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
 
   user User @relation(fields: [user_id], references: [id])
-  post Post @relation(fields: [post_id], references: [id])
+}
+
+enum NotificationType {
+  MESSAGE
+  COMMENT
+  LIKE
+  FOLLOW
+  OTHER
+}
+
+model settings {
+  id                String  @id @default(uuid())
+  user_id           String  @unique
+  profile_id        String  @unique
+  Terms_id          String  @unique
+  DeactivateAccount Boolean
+  BankAccount       String
+  DivinoWallet      String  @unique
+
+  User              User              @relation(fields: [user_id], references: [id])
+  Profile           Profile           @relation(fields: [profile_id], references: [id])
+  Terms_of_Services Terms_of_Services @relation(fields: [Terms_id], references: [id])
+
+  DivinoWallets DivinoWallets[]
+
+  Support Support[]
+
+  setting_permissions setting_permissions[]
+
+  user_bank_info user_bank_info[]
+
+  deactivateAccount deactivateAccount[]
+
+  deleteAccount deleteAccount[]
+}
+
+model deactivateAccount {
+  id                String   @id @default(uuid())
+  setting_id        String
+  content_displayed String
+  deactivated       Boolean  @default(false)
+  deactivatedAt     DateTime @default(now())
+
+  settings settings @relation(fields: [setting_id], references: [id])
+}
+
+model deleteAccount {
+  id                String   @id @default(uuid())
+  setting_id        String
+  content_displayed String
+  delete            Boolean  @default(false)
+  deletedAt         DateTime @default(now())
+
+  settings settings @relation(fields: [setting_id], references: [id])
+}
+
+model setting_permissions {
+  id               String   @id @default(uuid())
+  setting_id       String
+  use_camera       Boolean  @default(true)
+  use_contacts     Boolean  @default(true)
+  use_location     Boolean  @default(true)
+  use_micorphone   Boolean  @default(true)
+  use_notification Boolean  @default(true)
+  use_media        Boolean  @default(true)
+  UpdatedAt        DateTime @updatedAt
+
+  settings settings @relation(fields: [setting_id], references: [id])
+}
+
+model Service_Payment {
+  id            String @id @default(uuid())
+  AccountHolder String
+  BankName      String
+  RoutingNumber String
+  AccountNumber String
+  service_id    String @unique
+
+  // Connects a service provider to a payment (One-To-One)
+  ServiveProvider ServiceProvider @relation(fields: service_id, references: [id])
+
+  DivinoWallets DivinoWallets?
+}
+
+model DivinoWallets {
+  id              String   @id @default(uuid())
+  user_payment_id String   @unique
+  wallet_id       String
+  amount          Decimal  @default("0.00")
+  createdAt       DateTime @default(now())
+
+  settings        settings        @relation(fields: [wallet_id], references: [DivinoWallet])
+  Service_Payment Service_Payment @relation(fields: [user_payment_id], references: [id])
+}
+
+model Support {
+  id           String   @id @default(uuid())
+  support_id   String
+  blurb        String
+  email        String
+  phone_number String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  settings settings @relation(fields: [support_id], references: [id])
+}
+
+model Admin {
+  id       String  @id @default(uuid())
+  user_id  String  @unique
+  isActive Boolean @default(true)
+
+  user User @relation(fields: [id], references: [admin_id])
+
+  DivinoImageBucket DivinoImageBucket[]
+}
+
+// Stores images, vidoes, audio, anything the app needs to store. Advertisments too.
+model DivinoImageBucket {
+  id               String   @id @default(uuid())
+  file_name        String
+  who_made_change  String
+  file_type        String
+  file_size        Int
+  file_url         String
+  file_location    String
+  file_description String
+  bucket_name      String
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  Admin Admin @relation(fields: [who_made_change], references: [id])
 }

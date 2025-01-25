@@ -1,48 +1,13 @@
-import { Router } from "express";
-import {
-  loginUser,
-  registerUser,
-  logoutUser,
-  googleCallback,
-  facebookCallback,
-  sendPhoneNumberVerificationCode,
-  VerifyPhoneNumberCode,
-  isPhoneNumberLinkedToUser,
-} from "../controllers/authControllers";
-import passport from "../utils/passport";
+// Routes the frontend to the backend API using express functions
 
-const router = Router();
+// Importnat 
+// Not route througfh supabase/prisma cuz frontend
 
-router.post("/login", loginUser);
-router.post("/register", registerUser);
-router.get("/logout", logoutUser);
+import { Router } from 'express';
+import { registerUser } from '../auth/authController';
 
-router.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
+const authRoutes = Router();
 
-router.get(
-  "/google/callback",
-  passport.authenticate("google", { session: false }),
-  googleCallback
-);
+authRoutes.post('/register', registerUser);
 
-router.get(
-  "/facebook",
-  passport.authenticate("facebook", { scope: ["email"] })
-);
-
-router.get(
-  "/facebook/callback",
-  passport.authenticate("facebook", { session: false }),
-  facebookCallback
-);
-
-router.post("/sendVerificationCode", sendPhoneNumberVerificationCode);
-router.post("/verifyPhoneNumberCode", VerifyPhoneNumberCode);
-router.get(
-  "/isPhoneNumberLinkedToUser/:phoneNumber",
-  isPhoneNumberLinkedToUser
-);
-export default router;
+export default authRoutes;
