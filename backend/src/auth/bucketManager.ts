@@ -24,6 +24,7 @@ export const listFiles = async (bucketName: string, path: string = '') => {
     return data;
 };
 
+// error
 // export const getPublicUrl = (bucketName: string, filePath: string) => {
 //     const { //publicUrl } = supabase.storage.from(bucketName).getPublicUrl(filePath);
 //     return //publicUrl;
