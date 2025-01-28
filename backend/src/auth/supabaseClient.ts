@@ -9,8 +9,8 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl: string = 'https://gfuvnshwcadipxvrcsew.supabase.co' // API URL
-const supabaseKey: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmdXZuc2h3Y2FkaXB4dnJjc2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUzMzA1NDcsImV4cCI6MjA1MDkwNjU0N30.FPTJWVnCUJVwJFueDN9VfCZGuZof44O-jNgIBOz0EmU'; // Public key/ Anon Key
+const supabaseUrl: string = ' // API URL
+const supabaseKey: string = '
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
